@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @Data
 public class User {
     private final int id;
-    private String email;
+    @NonNull private String email;
     @NonNull private String login;
     @NonNull private String name;
-    private LocalDate birthday;
+    @NonNull private LocalDate birthday;
 }
