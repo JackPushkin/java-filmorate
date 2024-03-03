@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidatorTests {
@@ -64,8 +65,8 @@ public class ValidatorTests {
         films.put(1, film);
         // Создаю такой же фильм
         Film filmCopy = new Film("X", "Y", date, 50);
-        // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.isFilmNotAdded(filmCopy, films));
+        // Должен быть false
+        assertFalse(Validator.isFilmNotAdded(filmCopy, films));
     }
 
     @Test
@@ -108,8 +109,8 @@ public class ValidatorTests {
         // Создаю юзера с таким же login
         User user3 = new User("hi@mail.com", "Jack", "Johny", LocalDate.parse("2012-12-01"));
         users.put(1, user1);
-        // Должно вылететь исключение
-        assertThrows(UserValidationException.class, () -> Validator.isUserNotRegistered(user2, users));
-        assertThrows(UserValidationException.class, () -> Validator.isLoginFree(user3, users));
+        // Должен быть false
+        assertFalse(Validator.isUserNotRegistered(user2, users));
+        assertFalse(Validator.isLoginFree(user3, users));
     }
 }
