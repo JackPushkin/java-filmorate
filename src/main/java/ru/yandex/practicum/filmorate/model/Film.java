@@ -1,16 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
 public class Film {
-    private final int id;
+    @EqualsAndHashCode.Exclude
+    private int id;
     @NonNull private String name;
     @NonNull private String description;
     @NonNull private LocalDate releaseDate;
-    @NonNull private Duration duration;
+    @NonNull private int duration;
 }

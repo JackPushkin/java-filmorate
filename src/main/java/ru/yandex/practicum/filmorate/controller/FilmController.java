@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exeption.UpdateFilmException;
+import ru.yandex.practicum.filmorate.exeption.UpdateFilmsListException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
@@ -21,24 +21,36 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
 
-    Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
+    private int filmId = 1;
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        if (Validator.isFilmFormatValid(film)) {
-            films.put(film.getId(), film);
+        if (Validator.isFilmNotAdded(film, films)) {
+            if (Validator.isFilmFormatValid(film)) {
+                film.setId(filmId);
+                films.put(filmId++, film);
+            }
         }
+        log.debug("Add film: {}", film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
-            throw new UpdateFilmException("Film with such id does not exist");
+            log.warn("incorrect id: {}", film.getId());
+            throw new UpdateFilmsListException("Film with such id does not exist");
         }
         if (Validator.isFilmFormatValid(film)) {
-            films.put(film.getId(), film);
+            Film tempFilm = films.remove(film.getId());
+            if (Validator.isFilmNotAdded(film, films)) {
+                films.put(film.getId(), film);
+            } else {
+                films.put(tempFilm.getId(), tempFilm);
+            }
         }
+        log.debug("Update film: {}", film);
         return film;
     }
 
