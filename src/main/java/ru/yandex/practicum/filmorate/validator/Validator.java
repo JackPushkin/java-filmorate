@@ -22,7 +22,7 @@ public class Validator {
             film.getReleaseDate().isBefore(minDate) ||
             film.getDuration() < 0)
         {
-            log.warn("Not valid data {}", film);
+            log.warn("Not valid data: {}", film);
             throw new FilmValidationException("Incorrect film format");
         }
         return true;
@@ -30,8 +30,8 @@ public class Validator {
 
     public static boolean isFilmNotAdded(Film film, Map<Integer, Film> films) {
         if (films.containsValue(film)) {
-            log.warn("This film already added {}: ", film);
-            throw new FilmValidationException("Film already exists");
+            log.warn("This film already added: {} ", film);
+            return false;
         }
         return true;
     }
@@ -45,7 +45,7 @@ public class Validator {
             userLogin.isEmpty() || userLogin.isBlank() ||
             user.getBirthday().isAfter(LocalDate.now()))
         {
-            log.warn("Not valid data {}", user);
+            log.warn("Not valid data: {}", user);
             throw new UserValidationException("Incorrect user format");
         }
         if (userName == null || userName.isEmpty() || userName.isBlank()) {
@@ -57,7 +57,7 @@ public class Validator {
     public static boolean isUserNotRegistered(User user, Map<Integer, User> users) {
         if (users.values().stream().anyMatch((u) -> u.getEmail().equals(user.getEmail()))) {
             log.warn("Email {} is already busy: ", user.getEmail());
-            throw new UserValidationException("User with such email is already exist");
+            return false;
         }
         return true;
     }
@@ -65,7 +65,7 @@ public class Validator {
     public static boolean isLoginFree(User user, Map<Integer, User> users) {
         if (users.values().stream().anyMatch((u) -> u.getLogin().equals(user.getLogin()))) {
             log.warn("Login {} is already busy: ", user.getLogin());
-            throw new UserValidationException("User with such login is already exist");
+            return false;
         }
         return true;
     }

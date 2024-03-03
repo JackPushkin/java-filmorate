@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.yandex.practicum.filmorate.exeption.UpdateUsersListException;
+import ru.yandex.practicum.filmorate.exeption.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
@@ -44,9 +45,10 @@ public class UserController {
         if (Validator.isUserFormatValid(user)) {
             User tempUser = users.remove(user.getId());
             if (Validator.isUserNotRegistered(user, users) && Validator.isLoginFree(user, users)) {
-                users.put(tempUser.getId(), user);
+                users.put(user.getId(), user);
             } else {
                 users.put(tempUser.getId(), tempUser);
+                throw new UserValidationException("User with such email or login is already exist");
             }
         }
         return user;

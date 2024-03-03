@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.exeption.FilmValidationException;
 import ru.yandex.practicum.filmorate.exeption.UpdateFilmsListException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validator.Validator;
@@ -31,6 +32,8 @@ public class FilmController {
                 film.setId(filmId);
                 films.put(filmId++, film);
             }
+        } else {
+            throw new FilmValidationException("Film already exists");
         }
         log.debug("Add film: {}", film);
         return film;
@@ -48,6 +51,7 @@ public class FilmController {
                 films.put(film.getId(), film);
             } else {
                 films.put(tempFilm.getId(), tempFilm);
+                throw new FilmValidationException("Film already exists");
             }
         }
         log.debug("Update film: {}", film);
