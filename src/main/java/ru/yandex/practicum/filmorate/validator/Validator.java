@@ -60,11 +60,11 @@ public class Validator {
         return true;
     }
 
-    public static boolean isLoginFree(User user, Map<Integer, User> users) {
-        if (users.values().stream().anyMatch((u) -> u.getLogin().equals(user.getLogin()))) {
-            log.warn("Login {} is already busy: ", user.getLogin());
-            return false;
-        }
-        return true;
-    }
+//    public static boolean isLoginFree(User user, Map<Integer, User> users) {
+//        if (users.values().stream().anyMatch((u) -> u.getLogin().equals(user.getLogin()))) {
+//            log.warn("Login {} is already busy: ", user.getLogin());
+//            return false;
+//        }
+//        return true;
+//    }
 }

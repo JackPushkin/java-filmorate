@@ -106,11 +106,8 @@ public class ValidatorTests {
         User user1 = new User("hello@mail.ru", "Jack", "Jacky", LocalDate.parse("2001-12-01"));
         // Создаю юзера с таким же email
         User user2 = new User("hello@mail.ru", "John", "Johny", LocalDate.parse("2010-12-01"));
-        // Создаю юзера с таким же login
-        User user3 = new User("hi@mail.com", "Jack", "Johny", LocalDate.parse("2012-12-01"));
         users.put(1, user1);
         // Должен быть false
         assertFalse(Validator.isUserNotRegistered(user2, users));
-        assertFalse(Validator.isLoginFree(user3, users));
     }
 }

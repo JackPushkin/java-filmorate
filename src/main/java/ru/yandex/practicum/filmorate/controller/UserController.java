@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping
     public User addUser(@RequestBody User user) {
-        if (Validator.isUserNotRegistered(user, users) && Validator.isLoginFree(user, users)) {
+        if (Validator.isUserNotRegistered(user, users)) {
             if (Validator.isUserFormatValid(user)) {
                 user.setId(userId);
                 users.put(userId++, user);
@@ -44,7 +44,7 @@ public class UserController {
         }
         if (Validator.isUserFormatValid(user)) {
             User tempUser = users.remove(user.getId());
-            if (Validator.isUserNotRegistered(user, users) && Validator.isLoginFree(user, users)) {
+            if (Validator.isUserNotRegistered(user, users)) {
                 users.put(user.getId(), user);
             } else {
                 users.put(tempUser.getId(), tempUser);
