@@ -16,11 +16,15 @@ public class Validator {
         final int maxFilmDescriptionLength = 200;
         final LocalDate minDate = LocalDate.of(1895, 12, 28);
 
-        if (film.getName().isEmpty() ||
-            film.getName().isBlank() ||
+        if (film.getName() == null || film.getDescription() == null || film.getReleaseDate() == null) {
+            log.warn("Not valid data: {}", film);
+            throw new FilmValidationException("Incorrect film format");
+        }
+
+        if (film.getName().isBlank() ||
             film.getDescription().length() > maxFilmDescriptionLength ||
             film.getReleaseDate().isBefore(minDate) ||
-            film.getDuration() < 0) {
+            film.getDuration() <= 0) {
             log.warn("Not valid data: {}", film);
             throw new FilmValidationException("Incorrect film format");
         }
@@ -40,13 +44,18 @@ public class Validator {
         String userName = user.getName();
         String userEmail = user.getEmail();
 
-        if (userEmail.isBlank() || !userEmail.contains("@") ||
-            userLogin.isEmpty() || userLogin.isBlank() ||
-            user.getBirthday().isAfter(LocalDate.now())) {
+        if (userEmail == null || userLogin == null) {
             log.warn("Not valid data: {}", user);
             throw new UserValidationException("Incorrect user format");
         }
-        if (userName == null || userName.isEmpty() || userName.isBlank()) {
+
+        if (userEmail.isBlank() || !userEmail.contains("@") || userLogin.isBlank() ||
+            user.getBirthday().isAfter(LocalDate.now())) {
+
+            log.warn("Not valid data: {}", user);
+            throw new UserValidationException("Incorrect user format");
+        }
+        if (userName == null || userName.isBlank()) {
             user.setName(userLogin);
         }
         return true;
@@ -59,12 +68,4 @@ public class Validator {
         }
         return true;
     }
-
-//    public static boolean isLoginFree(User user, Map<Integer, User> users) {
-//        if (users.values().stream().anyMatch((u) -> u.getLogin().equals(user.getLogin()))) {
-//            log.warn("Login {} is already busy: ", user.getLogin());
-//            return false;
-//        }
-//        return true;
-//    }
 }
