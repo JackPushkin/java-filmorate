@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.yandex.practicum.filmorate.exeption.UpdateUsersListException;
-import ru.yandex.practicum.filmorate.exeption.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.Validator;
 
@@ -28,12 +27,10 @@ public class UserController {
 
     @PostMapping
     public User addUser(@RequestBody User user) {
-        if (Validator.isUserNotRegistered(user, users)) {
-            if (Validator.isUserFormatValid(user)) {
-                user.setId(userId);
-                users.put(userId++, user);
-            }
-        }
+        Validator.userFormatValidation(user);
+        Validator.userRegisteredValidation(user, users);
+        user.setId(userId);
+        users.put(userId++, user);
         return user;
     }
 
@@ -42,15 +39,9 @@ public class UserController {
         if (!users.containsKey(user.getId())) {
             throw new UpdateUsersListException("User with such id does not exist");
         }
-        if (Validator.isUserFormatValid(user)) {
-            User tempUser = users.remove(user.getId());
-            if (Validator.isUserNotRegistered(user, users)) {
-                users.put(user.getId(), user);
-            } else {
-                users.put(tempUser.getId(), tempUser);
-                throw new UserValidationException("User with such email or login is already exist");
-            }
-        }
+        Validator.userFormatValidation(user);
+        Validator.userRegisteredValidation(user, users);
+        users.put(user.getId(), user);
         return user;
     }
 

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exeption.FilmValidationException;
 import ru.yandex.practicum.filmorate.exeption.UpdateFilmsListException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validator.Validator;
@@ -27,14 +26,10 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        if (Validator.isFilmNotAdded(film, films)) {
-            if (Validator.isFilmFormatValid(film)) {
-                film.setId(filmId);
-                films.put(filmId++, film);
-            }
-        } else {
-            throw new FilmValidationException("Film already exists");
-        }
+        Validator.filmFormatValidation(film);
+        Validator.filmAddedValidation(film, films);
+        film.setId(filmId);
+        films.put(filmId++, film);
         log.debug("Add film: {}", film);
         return film;
     }
@@ -45,15 +40,9 @@ public class FilmController {
             log.warn("incorrect id: {}", film.getId());
             throw new UpdateFilmsListException("Film with such id does not exist");
         }
-        if (Validator.isFilmFormatValid(film)) {
-            Film tempFilm = films.remove(film.getId());
-            if (Validator.isFilmNotAdded(film, films)) {
-                films.put(film.getId(), film);
-            } else {
-                films.put(tempFilm.getId(), tempFilm);
-                throw new FilmValidationException("Film already exists");
-            }
-        }
+        Validator.filmFormatValidation(film);
+        Validator.filmAddedValidation(film, films);
+        films.put(film.getId(), film);
         log.debug("Update film: {}", film);
         return film;
     }

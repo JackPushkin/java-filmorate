@@ -12,9 +12,11 @@ import java.util.Map;
 @Slf4j
 public class Validator {
 
-    public static boolean isFilmFormatValid(Film film) {
+    public static void filmFormatValidation(Film film) {
         final int maxFilmDescriptionLength = 200;
         final LocalDate minDate = LocalDate.of(1895, 12, 28);
+        final String filmDescription = film.getDescription();
+        final LocalDate releaseDate = film.getReleaseDate();
 
         if (film.getName() == null || film.getDescription() == null || film.getReleaseDate() == null) {
             log.warn("Not valid data: {}", film);
@@ -22,24 +24,24 @@ public class Validator {
         }
 
         if (film.getName().isBlank() ||
-            film.getDescription().length() > maxFilmDescriptionLength ||
-            film.getReleaseDate().isBefore(minDate) ||
+            filmDescription.length() > maxFilmDescriptionLength ||
+            filmDescription.isBlank() ||
+            releaseDate.isBefore(minDate) ||
+            releaseDate.isAfter(LocalDate.now()) ||
             film.getDuration() <= 0) {
             log.warn("Not valid data: {}", film);
             throw new FilmValidationException("Incorrect film format");
         }
-        return true;
     }
 
-    public static boolean isFilmNotAdded(Film film, Map<Integer, Film> films) {
+    public static void filmAddedValidation(Film film, Map<Integer, Film> films) {
         if (films.containsValue(film)) {
             log.warn("This film already added: {} ", film);
-            return false;
+            throw new FilmValidationException("Film with such id already exists");
         }
-        return true;
     }
 
-    public static boolean isUserFormatValid(User user) {
+    public static void userFormatValidation(User user) {
         String userLogin = user.getLogin();
         String userName = user.getName();
         String userEmail = user.getEmail();
@@ -58,14 +60,12 @@ public class Validator {
         if (userName == null || userName.isBlank()) {
             user.setName(userLogin);
         }
-        return true;
     }
 
-    public static boolean isUserNotRegistered(User user, Map<Integer, User> users) {
+    public static void userRegisteredValidation(User user, Map<Integer, User> users) {
         if (users.values().stream().anyMatch((u) -> u.getEmail().equals(user.getEmail()))) {
             log.warn("Email {} is already busy: ", user.getEmail());
-            return false;
+            throw new UserValidationException("User with such email already exists");
         }
-        return true;
     }
 }
