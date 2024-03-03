@@ -20,8 +20,7 @@ public class Validator {
             film.getName().isBlank() ||
             film.getDescription().length() > maxFilmDescriptionLength ||
             film.getReleaseDate().isBefore(minDate) ||
-            film.getDuration() < 0)
-        {
+            film.getDuration() < 0) {
             log.warn("Not valid data: {}", film);
             throw new FilmValidationException("Incorrect film format");
         }
@@ -43,8 +42,7 @@ public class Validator {
 
         if (userEmail.isBlank() || !userEmail.contains("@") ||
             userLogin.isEmpty() || userLogin.isBlank() ||
-            user.getBirthday().isAfter(LocalDate.now()))
-        {
+            user.getBirthday().isAfter(LocalDate.now())) {
             log.warn("Not valid data: {}", user);
             throw new UserValidationException("Incorrect user format");
         }
