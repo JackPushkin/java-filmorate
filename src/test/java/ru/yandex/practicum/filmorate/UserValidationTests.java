@@ -23,10 +23,14 @@ public class UserValidationTests {
         User user3 = new User("hello", "Jack", "Jacky", date);
         User user4 = new User(null, "Jack", "Jacky", date);
         // Должно вылететь исключение
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user1));
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user2));
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user3));
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user4));
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user1),
+                "Incorrect user email");
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user2),
+                "Incorrect user email");
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user3),
+                "Incorrect user email");
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user4),
+                "Incorrect user email");
     }
 
     @Test
@@ -36,9 +40,12 @@ public class UserValidationTests {
         User user2 = new User("world@mail.ru", "   ", "Jacky", date);
         User user3 = new User("world@mail.ru", null, "Jacky", date);
         // Должно вылететь исключение
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user1));
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user2));
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user3));
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user1),
+                "Incorrect user login");
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user2),
+                "Incorrect user login");
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user3),
+                "Incorrect user login");
     }
 
     @Test
@@ -46,7 +53,8 @@ public class UserValidationTests {
         // Создаю юзера из будущего
         User user = new User("hello@mail.ru", "Jack", "Jacky", LocalDate.parse("2100-12-01"));
         // Должно вылететь исключение
-        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user));
+        assertThrows(UserValidationException.class, () -> Validator.userFormatValidation(user),
+                "Incorrect user birthday date");
     }
 
     @Test
@@ -58,6 +66,7 @@ public class UserValidationTests {
         User user2 = new User("hello@mail.ru", "John", "Johny", LocalDate.parse("2010-12-01"));
         users.put(1, user1);
         // Должно вылететь исключение
-        assertThrows(UserValidationException.class, () -> Validator.userRegisteredValidation(user2, users));
+        assertThrows(UserValidationException.class, () -> Validator.userRegisteredValidation(user2, users),
+                "User with such email already exists");
     }
 }

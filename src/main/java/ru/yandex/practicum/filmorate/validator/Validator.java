@@ -17,20 +17,26 @@ public class Validator {
         final LocalDate minDate = LocalDate.of(1895, 12, 28);
         final String filmDescription = film.getDescription();
         final LocalDate releaseDate = film.getReleaseDate();
+        final String filmName = film.getName();
 
-        if (film.getName() == null || film.getDescription() == null || film.getReleaseDate() == null) {
-            log.warn("Not valid data: {}", film);
-            throw new FilmValidationException("Incorrect film format");
+        if (filmName == null || filmName.isBlank()) {
+            log.warn("Not valid film name: {}", film);
+            throw new FilmValidationException("Incorrect film name");
         }
 
-        if (film.getName().isBlank() ||
-            filmDescription.length() > maxFilmDescriptionLength ||
-            filmDescription.isBlank() ||
-            releaseDate.isBefore(minDate) ||
-            releaseDate.isAfter(LocalDate.now()) ||
-            film.getDuration() <= 0) {
-            log.warn("Not valid data: {}", film);
-            throw new FilmValidationException("Incorrect film format");
+        if (filmDescription == null || filmDescription.length() > maxFilmDescriptionLength || filmDescription.isBlank()) {
+            log.warn("Not valid film description: {}", film);
+            throw new FilmValidationException("Incorrect film description");
+        }
+
+        if (releaseDate == null || releaseDate.isBefore(minDate) || releaseDate.isAfter(LocalDate.now())) {
+            log.warn("Not valid film release date: {}", film);
+            throw new FilmValidationException("Incorrect film release date");
+        }
+
+        if (film.getDuration() <= 0) {
+            log.warn("Not valid film duration: {}", film);
+            throw new FilmValidationException("Incorrect film duration");
         }
     }
 
@@ -42,23 +48,28 @@ public class Validator {
     }
 
     public static void userFormatValidation(User user) {
-        String userLogin = user.getLogin();
-        String userName = user.getName();
-        String userEmail = user.getEmail();
+        String login = user.getLogin();
+        String name = user.getName();
+        String email = user.getEmail();
+        LocalDate birthday = user.getBirthday();
 
-        if (userEmail == null || userLogin == null) {
-            log.warn("Not valid data: {}", user);
-            throw new UserValidationException("Incorrect user format");
+        if (email == null || email.isBlank() || !email.contains("@")) {
+            log.warn("Not valid user email: {}", user);
+            throw new UserValidationException("Incorrect user email");
         }
 
-        if (userEmail.isBlank() || !userEmail.contains("@") || userLogin.isBlank() ||
-            user.getBirthday().isAfter(LocalDate.now())) {
-
-            log.warn("Not valid data: {}", user);
-            throw new UserValidationException("Incorrect user format");
+        if (login == null || login.isBlank()) {
+            log.warn("Not valid user login: {}", user);
+            throw new UserValidationException("Incorrect user login");
         }
-        if (userName == null || userName.isBlank()) {
-            user.setName(userLogin);
+
+        if (birthday.isAfter(LocalDate.now())) {
+            log.warn("Not valid user birthday date: {}", user);
+            throw new UserValidationException("Incorrect user birthday date");
+        }
+
+        if (name == null || name.isBlank()) {
+            user.setName(login);
         }
     }
 

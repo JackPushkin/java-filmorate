@@ -24,9 +24,12 @@ public class FilmValidationTests {
         // Создаю фильм с незаданными именем
         Film film3 = new Film(null, "desc", date, 100);
         // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1));
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2));
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1),
+                "Incorrect film name");
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2),
+                "Incorrect film name");
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3),
+                "Incorrect film name");
     }
 
     @Test
@@ -37,13 +40,16 @@ public class FilmValidationTests {
         String description = new String(array);
         // Создаю фильм. Ожидаем, что вылетит исключение
         Film film = new Film("X", description, date, 100);
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
+                "Incorrect film description");
         // Добавляю пустое описание. Ожидаем, что вылетит исключение
         film.setDescription("");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
+                "Incorrect film description");
         // Установил описание в null. Ожидаем, что вылетит исключение
         film.setDescription(null);
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
+                "Incorrect film description");
     }
 
     @Test
@@ -53,9 +59,12 @@ public class FilmValidationTests {
         Film film2 = new Film("X", "Y", LocalDate.parse("2890-12-01"), 100);
         Film film3 = new Film("X", "Y", null, 100);
         // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1));
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2));
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1),
+                "Incorrect film release date");
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2),
+                "Incorrect film release date");
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3),
+                "Incorrect film release date");
     }
 
     @Test
@@ -63,7 +72,8 @@ public class FilmValidationTests {
         // Создаю фильм с некорректной продолжительностью
         Film film = new Film("X", "Y", date, -50);
         // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film));
+        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
+                "Incorrect film duration");
     }
 
     @Test
@@ -75,6 +85,7 @@ public class FilmValidationTests {
         // Создаю такой же фильм
         Film filmCopy = new Film("X", "Y", date, 50);
         // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmAddedValidation(filmCopy, films));
+        assertThrows(FilmValidationException.class, () -> Validator.filmAddedValidation(filmCopy, films),
+                "Film with such id already exists");
     }
 }
