@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.exeption.FilmValidationException;
+import ru.yandex.practicum.filmorate.exeption.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exeption.UserValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -77,6 +78,15 @@ public class Validator {
         if (users.values().stream().anyMatch((u) -> u.getEmail().equals(user.getEmail()))) {
             log.warn("Email {} is already busy: ", user.getEmail());
             throw new UserValidationException("User with such email already exists");
+        }
+    }
+
+    public static void idParamValidation(String paramOne, String paramTwo, Integer...param) {
+        if (param[0] == null || param[0] <= 0) {
+            throw new IncorrectParameterException(paramOne);
+        }
+        if (param.length == 2 && (param[1] == null || param[1] <= 0)) {
+            throw new IncorrectParameterException(paramTwo);
         }
     }
 }
