@@ -16,25 +16,25 @@ public class ErrorHandler {
 
     @ExceptionHandler(value = { FilmNotFoundException.class, UserNotFoundException.class })
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse FilmNotFoundExceptionHandler(RuntimeException e) {
+    public ErrorResponse filmNotFoundExceptionHandler(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(value = { FilmValidationException.class, UserValidationException.class })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse FilmValidationExceptionHandler(RuntimeException e) {
+    public ErrorResponse filmValidationExceptionHandler(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse IncorrectParameterExceptionHandler(IncorrectParameterException e) {
+    public ErrorResponse incorrectParameterExceptionHandler(IncorrectParameterException e) {
         return new ErrorResponse(String.format("Incorrect parameter: %s", e.getParameter()));
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse ThrowableHandler(Throwable e) {
+    public ErrorResponse throwableHandler(Throwable e) {
         return new ErrorResponse("Unexpected error.");
     }
 }
