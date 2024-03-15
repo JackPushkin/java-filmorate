@@ -21,7 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        Validator.filmFormatValidation(film);
+//        Validator.filmFormatValidation(film);
         Validator.filmAddedValidation(film, films);
         Integer id = getAndIncreaseId();
         film.setId(id);
@@ -36,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.warn("incorrect id: {}", film.getId());
             throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
         }
-        Validator.filmFormatValidation(film);
+//        Validator.filmFormatValidation(film);
         Validator.filmAddedValidation(film, films);
         films.put(film.getId(), film);
         log.debug("Update film: {}", film);

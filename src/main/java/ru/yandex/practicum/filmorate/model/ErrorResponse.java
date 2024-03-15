@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.Map;
+
+@Getter
+@AllArgsConstructor
 public class ErrorResponse {
-    private final String error;
-
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
-
-    public String getError() {
-        return error;
-    }
+    private final Map<String, String> errors;
 }

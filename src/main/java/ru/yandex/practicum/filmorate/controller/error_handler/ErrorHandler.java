@@ -1,40 +1,51 @@
 package ru.yandex.practicum.filmorate.controller.error_handler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.FilmValidationException;
 import ru.yandex.practicum.filmorate.exeption.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.UserValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
+
+import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler(value = { FilmNotFoundException.class, UserNotFoundException.class })
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse filmNotFoundExceptionHandler(RuntimeException e) {
-        return new ErrorResponse(e.getMessage());
+    public ErrorResponse notFoundExceptionHandler(RuntimeException e) {
+        return new ErrorResponse(Map.of("id", e.getMessage()));
     }
 
-    @ExceptionHandler(value = { FilmValidationException.class, UserValidationException.class })
+//    @ExceptionHandler
+//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//    public ErrorResponse incorrectParameterExceptionHandler(IncorrectParameterException e) {
+//        return new ErrorResponse(Map.of(e.getParameter(), "Incorrect parameter"));
+//    }
+
+    @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse filmValidationExceptionHandler(RuntimeException e) {
-        return new ErrorResponse(e.getMessage());
+    public ErrorResponse validationExceptionHandler(MethodArgumentNotValidException e) {
+        ErrorResponse errors = new ErrorResponse(new HashMap<>());
+        e.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.getErrors().put(fieldName, errorMessage);
+        });
+        return errors;
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse incorrectParameterExceptionHandler(IncorrectParameterException e) {
-        return new ErrorResponse(String.format("Incorrect parameter: %s", e.getParameter()));
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse throwableHandler(Throwable e) {
-        return new ErrorResponse("Unexpected error.");
+    public ErrorResponse parameterExceptionHandler(ConstraintViolationException e) {
+        return new ErrorResponse(Map.of("Incorrect parameter", e.getMessage()));
     }
 }
