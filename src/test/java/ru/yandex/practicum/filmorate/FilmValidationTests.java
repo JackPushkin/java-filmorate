@@ -90,9 +90,9 @@ public class FilmValidationTests {
         Set<ConstraintViolation<Film>> violations3 = validator.validate(film3);
 
         // Проверяю корректность вывода сообщений об ошибках
-        assertEquals("must not be null or before 1895-12-28", getErrorMessage(violations1));
-        assertEquals("must be a past date", getErrorMessage(violations2));
-        assertEquals("must not be null or before 1895-12-28", getErrorMessage(violations3));
+        assertEquals("must not be null or before 1895-12-28 or in the future", getErrorMessage(violations1));
+        assertEquals("must not be null or before 1895-12-28 or in the future", getErrorMessage(violations2));
+        assertEquals("must not be null or before 1895-12-28 or in the future", getErrorMessage(violations3));
     }
 
     private String getErrorMessage(Set<ConstraintViolation<Film>> violations) {

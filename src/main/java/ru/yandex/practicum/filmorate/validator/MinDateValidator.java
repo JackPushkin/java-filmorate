@@ -11,7 +11,7 @@ public class MinDateValidator implements ConstraintValidator<MinDate, LocalDate>
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext constraintValidatorContext) {
-        return !(localDate == null || localDate.isBefore(minDate));
+        return !(localDate == null || localDate.isBefore(minDate) || localDate.isAfter(LocalDate.now()));
     }
 
     @Override

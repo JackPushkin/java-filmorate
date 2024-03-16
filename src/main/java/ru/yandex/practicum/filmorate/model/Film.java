@@ -24,8 +24,7 @@ public class Film {
     @Size(max = 200, message = "size must be between 0 and 200")
     private String description;
 
-    @Past(message = "must be a past date")
-    @MinDate(message = "must not be null or before 1895-12-28")
+    @MinDate
     private LocalDate releaseDate;
 
     @Positive(message = "must be greater than 0")
