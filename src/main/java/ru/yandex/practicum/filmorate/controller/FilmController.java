@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.interfaces.FilmService;
-import ru.yandex.practicum.filmorate.validator.Validator;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequestMapping("/films")
 @Validated
 public class FilmController {
-
     private final FilmService filmService;
 
     @Autowired
@@ -48,31 +46,24 @@ public class FilmController {
 
     @GetMapping("/{filmId}")
     public Film getFilmById(@PathVariable @Positive Integer filmId) {
-//        Validator.idParamValidation("filmId", "", filmId);
         return filmService.getFilmById(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public void addLike(@PathVariable @Positive Integer filmId,
-                        @PathVariable @Positive Integer userId
-    ) {
-//        Validator.idParamValidation("filmId", "userId", filmId, userId);
+                        @PathVariable @Positive Integer userId) {
         filmService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void deleteLike(@PathVariable @Positive Integer filmId,
-                           @PathVariable @Positive Integer userId
-    ) {
-//        Validator.idParamValidation("filmId", "userId", filmId, userId);
+                           @PathVariable @Positive Integer userId) {
         filmService.deleteLike(filmId, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getPopularFilms(
-            @RequestParam(name = "count", defaultValue = "10") @Positive Integer count
-    ) {
-//        Validator.idParamValidation("count", "", count);
+            @RequestParam(name = "count", defaultValue = "10") @Positive Integer count) {
         return filmService.getPopularFilmsList(count);
     }
 }

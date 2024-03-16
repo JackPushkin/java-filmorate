@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
 import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,11 +24,11 @@ public class ErrorHandler {
         return new ErrorResponse(Map.of("id", e.getMessage()));
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    public ErrorResponse incorrectParameterExceptionHandler(IncorrectParameterException e) {
-//        return new ErrorResponse(Map.of(e.getParameter(), "Incorrect parameter"));
-//    }
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse userAlreadyRegisteredExceptionHandler(UserAlreadyRegisteredException e) {
+        return new ErrorResponse(Map.of("email", e.getMessage()));
+    }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)

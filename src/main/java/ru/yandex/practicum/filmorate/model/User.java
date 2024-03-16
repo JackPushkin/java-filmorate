@@ -15,7 +15,7 @@ public class User {
     private int id;
 
     @Email
-    @NotNull
+    @NotBlank
     private String email;
 
     @NotBlank
@@ -24,6 +24,7 @@ public class User {
     private String name;
 
     @Past
+    @NotNull
     private LocalDate birthday;
 
     private final Set<Integer> friendsId = new HashSet<>();

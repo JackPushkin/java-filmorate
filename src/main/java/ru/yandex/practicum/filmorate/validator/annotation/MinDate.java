@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = MinDateValidator.class)
 public @interface MinDate {
-    String message() default "Date must not be before {value}";
+    String message() default "не должна быть null или до {value}";
     Class<?>[] groups() default {};
     Class<?>[] payload() default {};
 
