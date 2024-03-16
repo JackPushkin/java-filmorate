@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.interfaces.UserService;
-import ru.yandex.practicum.filmorate.validator.Validator;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -46,37 +45,29 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable @Positive Integer userId) {
-//        Validator.idParamValidation("userId", "", userId);
         return userService.getUserById(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
     public void addFriend(@PathVariable @Positive Integer userId,
-                          @PathVariable @Positive Integer friendId
-    ) {
-//        Validator.idParamValidation("userId", "friendId", userId, friendId);
+                          @PathVariable @Positive Integer friendId) {
         userService.addFriend(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public void deleteFriend(@PathVariable @Positive Integer userId,
-                             @PathVariable @Positive Integer friendId
-    ) {
-//        Validator.idParamValidation("userId", "friendId", userId, friendId);
+                             @PathVariable @Positive Integer friendId) {
         userService.deleteFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends")
     public List<User> getFriendsList(@PathVariable @Positive Integer userId) {
-//        Validator.idParamValidation("userId", "", userId);
         return userService.getFriendsList(userId);
     }
 
     @GetMapping("/{userId}/friends/common/{otherUserId}")
     public List<User> getCommonFriendsList(@PathVariable @Positive Integer userId,
-                                           @PathVariable @Positive Integer otherUserId
-    ) {
-//        Validator.idParamValidation("userId", "otherUserId", userId, otherUserId);
+                                           @PathVariable @Positive Integer otherUserId) {
         return userService.getCommonFriendsList(userId, otherUserId);
     }
 }

@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exeption.FilmAlreadyAddedException;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validator.Validator;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-//        Validator.filmFormatValidation(film);
-        Validator.filmAddedValidation(film, films);
+        filmAddedCheck(film);
         Integer id = getAndIncreaseId();
         film.setId(id);
         films.put(id, film);
@@ -36,8 +35,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.warn("incorrect id: {}", film.getId());
             throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
         }
-//        Validator.filmFormatValidation(film);
-        Validator.filmAddedValidation(film, films);
+        filmAddedCheck(film);
         films.put(film.getId(), film);
         log.debug("Update film: {}", film);
         return film;
@@ -59,5 +57,12 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private Integer getAndIncreaseId() {
         return filmId++;
+    }
+
+    private void filmAddedCheck(Film film) {
+        if (films.containsValue(film)) {
+            log.warn("This film already added: {} ", film);
+            throw new FilmAlreadyAddedException("Film with such id already exists");
+        }
     }
 }

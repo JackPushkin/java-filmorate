@@ -1,91 +1,104 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exeption.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validator.Validator;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FilmValidationTests {
-
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private final LocalDate date = LocalDate.parse("2000-12-01");
 
     @Test
     public void filmNameValidationTest() {
         // Создаю фильмы с некорректным названием
-        Film film1 = new Film("", "desc", date, 100);
-        Film film2 = new Film("   ", "desc", date, 100);
-        // Создаю фильм с незаданными именем
-        Film film3 = new Film(null, "desc", date, 100);
-        // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1),
-                "Incorrect film name");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2),
-                "Incorrect film name");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3),
-                "Incorrect film name");
+        Film film1 = new Film("", "Y", date, 100);
+        Film film2 = new Film("   ", "Y", date, 100);
+        Film film3 = new Film(null, "Y", date, 100);
+
+        // Получаю список ошибок валидации
+        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3);
+
+        // Проверяю корректность вывода сообщений об ошибках
+        assertEquals("must not be empty", getErrorMessage(violations1));
+        assertEquals("must not be empty", getErrorMessage(violations2));
+        assertEquals("must not be empty", getErrorMessage(violations3));
     }
 
     @Test
     public void filmDescriptionValidationTest() {
-        // Создаю слишком длинное описание к фильму
-        char[] array = new char[201];
+        char[] array = new char[205];
         Arrays.fill(array, 'X');
-        String description = new String(array);
-        // Создаю фильм. Ожидаем, что вылетит исключение
-        Film film = new Film("X", description, date, 100);
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
-                "Incorrect film description");
-        // Добавляю пустое описание. Ожидаем, что вылетит исключение
-        film.setDescription("");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
-                "Incorrect film description");
-        // Установил описание в null. Ожидаем, что вылетит исключение
-        film.setDescription(null);
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
-                "Incorrect film description");
-    }
+        String tooLongDescription = new String(array);
 
-    @Test
-    public void filmReleaseDateValidationTest() {
-        // Создаю фильмы с некорректной датой выхода
-        Film film1 = new Film("X", "Y", LocalDate.parse("1890-12-01"), 100);
-        Film film2 = new Film("X", "Y", LocalDate.parse("2890-12-01"), 100);
-        Film film3 = new Film("X", "Y", null, 100);
-        // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film1),
-                "Incorrect film release date");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film2),
-                "Incorrect film release date");
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film3),
-                "Incorrect film release date");
+        // Создаю фильмы с некорректным описанием
+        Film film1 = new Film("X", tooLongDescription, date, 100);
+        Film film2 = new Film("X", "", date, 100);
+        Film film3 = new Film("X", "   ", date, 100);
+        Film film4 = new Film("X", null, date, 100);
+
+        // Получаю список ошибок валидации
+        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3);
+        Set<ConstraintViolation<Film>> violations4 = validator.validate(film4);
+
+        // Проверяю корректность вывода сообщений об ошибках
+        assertEquals("size must be between 0 and 200", getErrorMessage(violations1));
+        assertEquals("must not be empty", getErrorMessage(violations2));
+        assertEquals("must not be empty", getErrorMessage(violations3));
+        assertEquals("must not be empty", getErrorMessage(violations4));
     }
 
     @Test
     public void filmDurationValidationTest() {
-        // Создаю фильм с некорректной продолжительностью
-        Film film = new Film("X", "Y", date, -50);
-        // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmFormatValidation(film),
-                "Incorrect film duration");
+        int negativeDuration = -50;
+        int zeroDuration = 0;
+
+        // Создаю фильмы с некорректной продолжительностью
+        Film film1 = new Film("X", "Y", date, negativeDuration);
+        Film film2 = new Film("X", "Y", date, zeroDuration);
+
+        // Получаю список ошибок валидации
+        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2);
+
+        // Проверяю корректность вывода сообщений об ошибках
+        assertEquals("must be greater than 0", getErrorMessage(violations1));
+        assertEquals("must be greater than 0", getErrorMessage(violations2));
     }
 
     @Test
-    public void filmAlreadyAddedTest() {
-        // Создаю фильм
-        Map<Integer, Film> films = new HashMap<>();
-        Film film = new Film("X", "Y", date, 50);
-        films.put(1, film);
-        // Создаю такой же фильм
-        Film filmCopy = new Film("X", "Y", date, 50);
-        // Должно вылететь исключение
-        assertThrows(FilmValidationException.class, () -> Validator.filmAddedValidation(filmCopy, films),
-                "Film with such id already exists");
+    public void filmReleaseDateValidationTest() {
+        // Создаю фильмы с некорректной датой
+        Film film1 = new Film("X", "Y", LocalDate.parse("1890-12-01"), 100);
+        Film film2 = new Film("X", "Y", LocalDate.parse("2890-12-01"), 100);
+        Film film3 = new Film("X", "Y", null, 100);
+
+        // Получаю список ошибок валидации
+        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3);
+
+        // Проверяю корректность вывода сообщений об ошибках
+        assertEquals("must not be null or before 1895-12-28", getErrorMessage(violations1));
+        assertEquals("must be a past date", getErrorMessage(violations2));
+        assertEquals("must not be null or before 1895-12-28", getErrorMessage(violations3));
+    }
+
+    private String getErrorMessage(Set<ConstraintViolation<Film>> violations) {
+        return violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .findFirst()
+                .orElse("validation success");
     }
 }

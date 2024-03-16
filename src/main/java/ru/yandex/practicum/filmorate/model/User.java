@@ -14,16 +14,17 @@ import java.util.Set;
 public class User {
     private int id;
 
-    @Email
-    @NotNull
+    @Email(message = "must be a well-formed email address")
+    @NotBlank(message = "must not be empty")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "must not be empty")
     private String login;
 
     private String name;
 
-    @Past
+    @Past(message = "must be a past date")
+    @NotNull(message = "must not be null")
     private LocalDate birthday;
 
     private final Set<Integer> friendsId = new HashSet<>();
