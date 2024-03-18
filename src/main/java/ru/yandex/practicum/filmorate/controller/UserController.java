@@ -30,13 +30,13 @@ public class UserController {
     }
 
     @PostMapping
-    @Validated(value = {ValidationMarkerInterface.onCreate.class})
+    @Validated(value = {ValidationMarkerInterface.OnCreate.class})
     public User addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
 
     @PutMapping
-    @Validated(value = {ValidationMarkerInterface.onUpdate.class})
+    @Validated(value = {ValidationMarkerInterface.OnUpdate.class})
     public User updateUser(@Valid @RequestBody User user) {
         return userService.updateUser(user);
     }

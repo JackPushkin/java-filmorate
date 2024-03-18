@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.validator;
 
 public interface ValidationMarkerInterface {
 
-    interface onCreate {}
+    interface OnCreate {}
 
-    interface onUpdate {}
+    interface OnUpdate {}
 }

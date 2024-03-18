@@ -18,27 +18,27 @@ public class User {
 
     @Email(message = "must be a well-formed email address")
     @NotNull(message = "must not be empty",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     @Pattern(regexp = ".*[^ ].*",
             message = "must not consist only with whitespaces",
-            groups = {ValidationMarkerInterface.onCreate.class, ValidationMarkerInterface.onUpdate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class, ValidationMarkerInterface.OnUpdate.class})
     private String email;
 
     @NotBlank(message = "must not be empty",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     @Pattern(regexp = ".*[^ ].*",
             message = "must not be empty",
-            groups = {ValidationMarkerInterface.onUpdate.class})
+            groups = {ValidationMarkerInterface.OnUpdate.class})
     private String login;
 
     @Pattern(regexp = ".*[^ ].*",
             message = "must not consist only with whitespaces",
-            groups = {ValidationMarkerInterface.onUpdate.class})
+            groups = {ValidationMarkerInterface.OnUpdate.class})
     private String name;
 
     @Past(message = "must be a past date")
     @NotNull(message = "must not be null",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     private LocalDate birthday;
 
     private final Set<Integer> friendsId = new HashSet<>();

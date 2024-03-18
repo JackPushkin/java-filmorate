@@ -25,9 +25,9 @@ public class FilmValidationTests {
         Film film3 = new Film(null, "Y", date, 100);
 
         // Получаю список ошибок валидации
-        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<Film>> violations1 = validator.validate(film1, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.OnCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("must not be empty", getErrorMessage(violations1));
@@ -49,9 +49,9 @@ public class FilmValidationTests {
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
-        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<Film>> violations4 = validator.validate(film4, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<Film>> violations2 = validator.validate(film2, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<Film>> violations4 = validator.validate(film4, ValidationMarkerInterface.OnCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("size must be between 0 and 200", getErrorMessage(violations1));
@@ -88,7 +88,7 @@ public class FilmValidationTests {
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
         Set<ConstraintViolation<Film>> violations2 = validator.validate(film2);
-        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<Film>> violations3 = validator.validate(film3, ValidationMarkerInterface.OnCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("must not be before 1895-12-28 or in the future", getErrorMessage(violations1));

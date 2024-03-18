@@ -20,20 +20,20 @@ public class Film {
     private int id;
 
     @NotBlank(message = "must not be empty",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     @Pattern(regexp = ".*[^ ].*",
             message = "must not be empty",
-            groups = {ValidationMarkerInterface.onUpdate.class})
+            groups = {ValidationMarkerInterface.OnUpdate.class})
     private String name;
 
     @NotBlank(message = "must not be empty",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     @Size(max = 200, message = "size must be between 0 and 200")
     private String description;
 
     @MinDate
     @NotNull(message = "must not be null",
-            groups = {ValidationMarkerInterface.onCreate.class})
+            groups = {ValidationMarkerInterface.OnCreate.class})
     private LocalDate releaseDate;
 
     @Positive(message = "must be greater than 0")

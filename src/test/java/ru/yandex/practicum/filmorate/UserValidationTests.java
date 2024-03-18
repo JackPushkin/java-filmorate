@@ -24,9 +24,9 @@ public class UserValidationTests {
         User user3 = new User(null, "Jack", "Jacky", date);
 
         // Получаю список ошибок валидации
-        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.OnCreate.class);
         Set<ConstraintViolation<User>> violations2 = validator.validate(user2);
-        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.OnCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("must not consist only with whitespaces", getErrorMessage(violations1));
@@ -42,9 +42,9 @@ public class UserValidationTests {
         User user3 = new User("world@mail.ru", null, "Jacky", date);
 
         // Получаю список ошибок валидации
-        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<User>> violations2 = validator.validate(user2, ValidationMarkerInterface.onCreate.class);
-        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<User>> violations2 = validator.validate(user2, ValidationMarkerInterface.OnCreate.class);
+        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.OnCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("must not be empty", getErrorMessage(violations1));

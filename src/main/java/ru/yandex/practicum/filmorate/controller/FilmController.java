@@ -31,13 +31,13 @@ public class FilmController {
     }
 
     @PostMapping
-    @Validated(value = {ValidationMarkerInterface.onCreate.class})
+    @Validated(value = {ValidationMarkerInterface.OnCreate.class})
     public Film addFilm(@Valid @RequestBody Film film) {
         return filmService.addFilm(film);
     }
 
     @PutMapping
-    @Validated(value = {ValidationMarkerInterface.onUpdate.class})
+    @Validated(value = {ValidationMarkerInterface.OnUpdate.class})
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmService.updateFilm(film);
     }
