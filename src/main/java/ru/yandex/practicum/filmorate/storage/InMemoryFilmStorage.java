@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +32,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if (!films.containsKey(film.getId())) {
-            log.warn("incorrect id: {}", film.getId());
+        Film existingFilm = films.get(film.getId());
+        if (existingFilm == null) {
             throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
         }
         filmAddedCheck(film);
-        films.put(film.getId(), film);
+        updateFilmFields(existingFilm, film);
         log.debug("Update film: {}", film);
-        return film;
+        return existingFilm;
     }
 
     @Override
@@ -63,6 +64,26 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsValue(film)) {
             log.warn("This film already added: {} ", film);
             throw new FilmAlreadyAddedException("Film with such id already exists");
+        }
+    }
+
+    private void updateFilmFields(Film existingFilm, Film updateFilm) {
+        String newName = updateFilm.getName();
+        String newDescription = updateFilm.getDescription();
+        LocalDate newReleaseDate = updateFilm.getReleaseDate();
+        int newDuration = updateFilm.getDuration();
+
+        if (newName != null) {
+            existingFilm.setName(newName);
+        }
+        if (newDescription != null) {
+            existingFilm.setDescription(newDescription);
+        }
+        if (newReleaseDate != null) {
+            existingFilm.setReleaseDate(newReleaseDate);
+        }
+        if (newDuration != 0) {
+            existingFilm.setDuration(newDuration);
         }
     }
 }

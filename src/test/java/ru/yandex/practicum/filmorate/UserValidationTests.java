@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -23,12 +24,12 @@ public class UserValidationTests {
         User user3 = new User(null, "Jack", "Jacky", date);
 
         // Получаю список ошибок валидации
-        Set<ConstraintViolation<User>> violations1 = validator.validate(user1);
+        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.onCreate.class);
         Set<ConstraintViolation<User>> violations2 = validator.validate(user2);
-        Set<ConstraintViolation<User>> violations3 = validator.validate(user3);
+        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.onCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
-        assertEquals("must not be empty", getErrorMessage(violations1));
+        assertEquals("must not consist only with whitespaces", getErrorMessage(violations1));
         assertEquals("must be a well-formed email address", getErrorMessage(violations2));
         assertEquals("must not be empty", getErrorMessage(violations3));
     }
@@ -41,9 +42,9 @@ public class UserValidationTests {
         User user3 = new User("world@mail.ru", null, "Jacky", date);
 
         // Получаю список ошибок валидации
-        Set<ConstraintViolation<User>> violations1 = validator.validate(user1);
-        Set<ConstraintViolation<User>> violations2 = validator.validate(user2);
-        Set<ConstraintViolation<User>> violations3 = validator.validate(user3);
+        Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<User>> violations2 = validator.validate(user2, ValidationMarkerInterface.onCreate.class);
+        Set<ConstraintViolation<User>> violations3 = validator.validate(user3, ValidationMarkerInterface.onCreate.class);
 
         // Проверяю корректность вывода сообщений об ошибках
         assertEquals("must not be empty", getErrorMessage(violations1));

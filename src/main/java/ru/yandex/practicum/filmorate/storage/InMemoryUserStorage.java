@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +31,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        if (!users.containsKey(user.getId())) {
-            throw new UserNotFoundException(String.format("User with id=%d not found", userId));
+        User existingUser = users.get(user.getId());
+        if (existingUser == null) {
+            throw new UserNotFoundException(String.format("User with id=%d not found", user.getId()));
         }
-        setUserName(user);
         userRegisteredCheck(user);
-        users.put(user.getId(), user);
-        log.debug("Update user: {}", user);
-        return user;
+        updateUserFields(existingUser, user);
+        log.debug("Update user: {}", existingUser);
+        return existingUser;
     }
 
     @Override
@@ -66,6 +67,26 @@ public class InMemoryUserStorage implements UserStorage {
         if (registeredUsers.values().stream().anyMatch((u) -> u.getEmail().equals(user.getEmail()))) {
             log.warn("Email {} is already busy: ", user.getEmail());
             throw new UserAlreadyRegisteredException("Пользователь с таким email-адресом уже зарегистрирован");
+        }
+    }
+
+    private void updateUserFields(User existingUser, User updateUser) {
+        String newEmail = updateUser.getEmail();
+        String newLogin = updateUser.getLogin();
+        String newName = updateUser.getName();
+        LocalDate newBirthday = updateUser.getBirthday();
+
+        if (newEmail != null) {
+            existingUser.setEmail(newEmail);
+        }
+        if (newLogin != null) {
+            existingUser.setLogin(newLogin);
+        }
+        if (newName != null) {
+            existingUser.setName(newName);
+        }
+        if (newBirthday != null) {
+            existingUser.setBirthday(newBirthday);
         }
     }
 }

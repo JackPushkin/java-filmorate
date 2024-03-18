@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.interfaces.UserService;
+import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -29,11 +30,13 @@ public class UserController {
     }
 
     @PostMapping
+    @Validated(value = {ValidationMarkerInterface.onCreate.class})
     public User addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
 
     @PutMapping
+    @Validated(value = {ValidationMarkerInterface.onUpdate.class})
     public User updateUser(@Valid @RequestBody User user) {
         return userService.updateUser(user);
     }

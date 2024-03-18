@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,16 +17,28 @@ public class User {
     private int id;
 
     @Email(message = "must be a well-formed email address")
-    @NotBlank(message = "must not be empty")
+    @NotNull(message = "must not be empty",
+            groups = {ValidationMarkerInterface.onCreate.class})
+    @Pattern(regexp = ".*[^ ].*",
+            message = "must not consist only with whitespaces",
+            groups = {ValidationMarkerInterface.onCreate.class, ValidationMarkerInterface.onUpdate.class})
     private String email;
 
-    @NotBlank(message = "must not be empty")
+    @NotBlank(message = "must not be empty",
+            groups = {ValidationMarkerInterface.onCreate.class})
+    @Pattern(regexp = ".*[^ ].*",
+            message = "must not be empty",
+            groups = {ValidationMarkerInterface.onUpdate.class})
     private String login;
 
+    @Pattern(regexp = ".*[^ ].*",
+            message = "must not consist only with whitespaces",
+            groups = {ValidationMarkerInterface.onUpdate.class})
     private String name;
 
     @Past(message = "must be a past date")
-    @NotNull(message = "must not be null")
+    @NotNull(message = "must not be null",
+            groups = {ValidationMarkerInterface.onCreate.class})
     private LocalDate birthday;
 
     private final Set<Integer> friendsId = new HashSet<>();

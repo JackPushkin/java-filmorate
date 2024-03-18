@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.interfaces.FilmService;
+import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -30,11 +31,13 @@ public class FilmController {
     }
 
     @PostMapping
+    @Validated(value = {ValidationMarkerInterface.onCreate.class})
     public Film addFilm(@Valid @RequestBody Film film) {
         return filmService.addFilm(film);
     }
 
     @PutMapping
+    @Validated(value = {ValidationMarkerInterface.onUpdate.class})
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmService.updateFilm(film);
     }
