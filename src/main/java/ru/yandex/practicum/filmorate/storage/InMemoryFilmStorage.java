@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.FilmAlreadyAddedException;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
@@ -22,7 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        filmAddedCheck(film);
+//        filmAddedCheck(film);
         Integer id = getAndIncreaseId();
         film.setId(id);
         films.put(id, film);
@@ -36,7 +35,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (existingFilm == null) {
             throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
         }
-        filmAddedCheck(film);
         updateFilmFields(existingFilm, film);
         log.debug("Update film: {}", film);
         return existingFilm;
@@ -58,13 +56,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private Integer getAndIncreaseId() {
         return filmId++;
-    }
-
-    private void filmAddedCheck(Film film) {
-        if (films.containsValue(film)) {
-            log.warn("This film already added: {} ", film);
-            throw new FilmAlreadyAddedException("Film with such id already exists");
-        }
     }
 
     private void updateFilmFields(Film existingFilm, Film updateFilm) {
