@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
@@ -9,11 +10,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
 public class User {
+
     private int id;
 
     @Email(message = "must be a well-formed email address")
@@ -41,16 +44,9 @@ public class User {
             groups = {ValidationMarkerInterface.OnCreate.class})
     private LocalDate birthday;
 
-    private final Set<Integer> friendsId = new HashSet<>();
+    private Set<Integer> friendsId;
 
-    private final Set<Integer> likedFilmsId = new HashSet<>();
-
-    public User(String email, String login, String name, LocalDate birthday) {
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-    }
+    private List<Integer> likedFilmsId;
 
     public void addFilmIdToList(Integer filmId) {
         likedFilmsId.add(filmId);

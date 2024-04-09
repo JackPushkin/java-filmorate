@@ -1,22 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 import ru.yandex.practicum.filmorate.validator.annotation.MinDate;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
 public class Film {
-    @EqualsAndHashCode.Exclude
+
     private int id;
 
     @NotBlank(message = "must not be empty",
@@ -39,14 +37,15 @@ public class Film {
     @Positive(message = "must be greater than 0")
     private int duration;
 
-    private final Set<Integer> usersId = new HashSet<>();
+    @Valid
+    @NotNull(message = "must not be null",
+            groups = {ValidationMarkerInterface.OnCreate.class})
+    private MpaRating mpa;
 
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
+    @Valid
+    private Set<Genre> genres;
+
+    private List<Integer> usersId;
 
     public void addUserIdToList(Integer id) {
         usersId.add(id);

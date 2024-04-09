@@ -1,47 +1,37 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.interfaces.UserService;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserServiceImpl(UserStorage userStorage) {
+    public UserServiceImpl(@Qualifier(value = "userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.addFriendIdToList(friendId);
-        friend.addFriendIdToList(userId);
+        userStorage.addFriend(userId, friendId);
     }
 
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.deleteFriendIdFromList(friend.getId());
+        userStorage.deleteFriend(userId, friendId);
     }
 
     @Override
-    public List<User> getCommonFriendsList(Integer userId, Integer otherId) {
-        User user = userStorage.getUserById(userId);
-        User otherUser = userStorage.getUserById(otherId);
-
-        return user.getFriendsId().stream()
-                .filter(id -> otherUser.getFriendsId().contains(id))
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+    public Set<User> getCommonFriendsList(Integer userId, Integer otherId) {
+        return userStorage.getCommonFriendsList(userId, otherId);
     }
 
     @Override
@@ -50,16 +40,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getFriendsList(Integer userId) {
-        User user = userStorage.getUserById(userId);
-
-        return user.getFriendsId().stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+    public Set<User> getFriendsList(Integer userId) {
+        return userStorage.getUserFriends(userId);
     }
 
     @Override
     public User addUser(User user) {
+        String userName = user.getName();
+        if (userName == null || userName.isBlank()) {
+            user.setName(user.getLogin());
+        }
         return userStorage.addUser(user);
     }
 

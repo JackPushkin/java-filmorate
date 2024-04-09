@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -64,12 +65,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/friends")
-    public List<User> getFriendsList(@PathVariable @Positive Integer userId) {
+    public Set<User> getFriendsList(@PathVariable @Positive Integer userId) {
         return userService.getFriendsList(userId);
     }
 
     @GetMapping("/{userId}/friends/common/{otherUserId}")
-    public List<User> getCommonFriendsList(@PathVariable @Positive Integer userId,
+    public Set<User> getCommonFriendsList(@PathVariable @Positive Integer userId,
                                            @PathVariable @Positive Integer otherUserId) {
         return userService.getCommonFriendsList(userId, otherUserId);
     }

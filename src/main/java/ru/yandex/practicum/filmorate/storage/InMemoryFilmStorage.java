@@ -1,16 +1,21 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -18,10 +23,15 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private Integer filmId = 1;
+    private final UserStorage userStorage;
+
+    @Autowired
+    public InMemoryFilmStorage(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     @Override
     public Film addFilm(Film film) {
-//        filmAddedCheck(film);
         Integer id = getAndIncreaseId();
         film.setId(id);
         films.put(id, film);
@@ -52,6 +62,30 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
         }
         return film;
+    }
+
+    @Override
+    public List<Film> getPopularFilms(Integer count) {
+        return getFilms().stream()
+                .sorted((f1, f2) -> Integer.compare(f2.getUsersId().size(), f1.getUsersId().size()))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addLike(Integer filmId, Integer userId) {
+        User user = userStorage.getUserById(userId);
+        Film film = getFilmById(filmId);
+        user.addFilmIdToList(filmId);
+        film.addUserIdToList(userId);
+    }
+
+    @Override
+    public void deleteLike(Integer filmId, Integer userId) {
+        User user = userStorage.getUserById(userId);
+        Film film = getFilmById(filmId);
+        user.deleteFilmIdFromList(filmId);
+        film.deleteUserIdFromList(userId);
     }
 
     private Integer getAndIncreaseId() {

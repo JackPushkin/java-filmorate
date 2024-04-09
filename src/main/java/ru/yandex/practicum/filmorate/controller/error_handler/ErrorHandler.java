@@ -6,9 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
-import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import javax.validation.ConstraintViolationException;
@@ -18,7 +16,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(value = { FilmNotFoundException.class, UserNotFoundException.class })
+    @ExceptionHandler(value = {
+            FilmNotFoundException.class,
+            UserNotFoundException.class,
+            RatingNotFoundException.class,
+            GenreNotFoundException.class })
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundExceptionHandler(RuntimeException e) {
         return new ErrorResponse(Map.of("id", e.getMessage()));
@@ -27,7 +29,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse userAlreadyRegisteredExceptionHandler(UserAlreadyRegisteredException e) {
-        return new ErrorResponse(Map.of("email", e.getMessage()));
+        return new ErrorResponse(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler

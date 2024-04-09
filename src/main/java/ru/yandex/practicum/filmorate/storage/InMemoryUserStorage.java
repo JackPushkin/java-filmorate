@@ -8,10 +8,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -53,6 +51,41 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UserNotFoundException(String.format("Пользователь с таким id=%d не найден", userId));
         }
         return user;
+    }
+
+    @Override
+    public void addFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.addFriendIdToList(friendId);
+        friend.addFriendIdToList(userId);
+    }
+
+    @Override
+    public void deleteFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.deleteFriendIdFromList(friend.getId());
+    }
+
+    @Override
+    public Set<User> getUserFriends(Integer userId) {
+        User user = getUserById(userId);
+
+        return user.getFriendsId().stream()
+                .map(this::getUserById)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<User> getCommonFriendsList(Integer userId, Integer otherId) {
+        User user = getUserById(userId);
+        User otherUser = getUserById(otherId);
+
+        return user.getFriendsId().stream()
+                .filter(id -> otherUser.getFriendsId().contains(id))
+                .map(this::getUserById)
+                .collect(Collectors.toSet());
     }
 
     private void setUserName(User user) {
