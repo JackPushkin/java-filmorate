@@ -56,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
 
         String title = film.getName();
         String description = film.getDescription();
-        LocalDate release_date = film.getReleaseDate();
+        LocalDate releaseDate = film.getReleaseDate();
         int duration = film.getDuration();
         MpaRating rating = film.getMpa();
 
@@ -65,11 +65,11 @@ public class FilmDbStorage implements FilmStorage {
 
         if (title != null) selectedFilm.setName(title);
         if (description != null) selectedFilm.setDescription(description);
-        if (release_date != null) selectedFilm.setReleaseDate(release_date);
+        if (releaseDate != null) selectedFilm.setReleaseDate(releaseDate);
         if (duration > 0) selectedFilm.setDuration(duration);
         if (rating != null) selectedFilm.setMpa(rating);
 
-        int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDuration(), selectedFilm.getReleaseDate(),
+        int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDescription(), selectedFilm.getReleaseDate(),
                 selectedFilm.getDuration(), selectedFilm.getMpa().getId(), film.getId());
         if (count == 0) {
             throw new FilmNotFoundException(String.format("Film with id=%d not found", film.getId()));
@@ -156,10 +156,10 @@ public class FilmDbStorage implements FilmStorage {
                 .description(rs.getString("description"))
                 .duration(rs.getInt("duration"))
                 .releaseDate(rs.getDate("release_date").toLocalDate())
-                .mpa(MpaRating.builder().
-                        id(rs.getInt("id_rating")).
-                        name(getRatingName(rs.getInt("id_rating"))).
-                        build())
+                .mpa(MpaRating.builder()
+                        .id(rs.getInt("id_rating"))
+                        .name(getRatingName(rs.getInt("id_rating")))
+                        .build())
                 .genres(getFilmGenresSet(filmId))
                 .usersId(getFilmLikesList(filmId))
                 .build();
