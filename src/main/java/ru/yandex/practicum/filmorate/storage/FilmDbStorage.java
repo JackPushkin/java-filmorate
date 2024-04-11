@@ -69,7 +69,7 @@ public class FilmDbStorage implements FilmStorage {
         if (duration > 0) selectedFilm.setDuration(duration);
         if (rating != null) selectedFilm.setMpa(rating);
 
-        int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDuration(), selectedFilm.getReleaseDate(),
+        int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDescription(), selectedFilm.getReleaseDate(),
                 selectedFilm.getDuration(), selectedFilm.getMpa().getId(), film.getId());
         if (count == 0) {
             throw new FilmNotFoundException(String.format("Film with id=%d not found", film.getId()));
