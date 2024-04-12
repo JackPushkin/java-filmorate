@@ -143,9 +143,9 @@ public class FilmDbStorage implements FilmStorage {
                 .build()), filmId));
     }
 
-    private List<Integer> getFilmLikesList(Integer filmId) {
-        String sqlQuery = "SELECT id_user FROM likes WHERE id_film = ?";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getInt("id_user"), filmId);
+    private Integer getFilmLikesCount(Integer filmId) {
+        String sqlQuery = "SELECT COUNT(id_user) FROM likes WHERE id_film = ?";
+        return jdbcTemplate.queryForObject(sqlQuery, Integer.class, filmId);
     }
 
     private Film makeFilm(ResultSet rs) throws SQLException {
@@ -161,7 +161,7 @@ public class FilmDbStorage implements FilmStorage {
                         .name(getRatingName(rs.getInt("id_rating")))
                         .build())
                 .genres(getFilmGenresSet(filmId))
-                .usersId(getFilmLikesList(filmId))
+                .likesCount(getFilmLikesCount(filmId))
                 .build();
     }
 }

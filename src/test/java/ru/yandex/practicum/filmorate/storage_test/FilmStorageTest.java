@@ -44,7 +44,7 @@ public class FilmStorageTest {
 
         // Создаю фильм
         Film film = Film.builder().name("Film").description("Description").releaseDate(date).mpa(rating)
-                .usersId(new ArrayList<>()).genres(new HashSet<>()).build();
+                .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю фильм в БД
         filmStorage.addFilm(film);
@@ -64,7 +64,7 @@ public class FilmStorageTest {
 
         // Создаю фильм
         Film film = Film.builder().name("Film").description("Description").releaseDate(date).mpa(rating)
-                .usersId(new ArrayList<>()).genres(new HashSet<>()).build();
+                .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю фильм в БД
         Film addedFilm = filmStorage.addFilm(film);
@@ -102,11 +102,11 @@ public class FilmStorageTest {
 
         // Создаю фильм
         Film film1 = Film.builder().name("Film1").description("Description1").releaseDate(date).mpa(rating)
-                .usersId(new ArrayList<>()).genres(new HashSet<>()).build();
+                .likesCount(0).genres(new HashSet<>()).build();
         Film film2 = Film.builder().name("Film2").description("Description2").releaseDate(date).mpa(rating)
-                .usersId(new ArrayList<>()).genres(new HashSet<>()).build();
+                .likesCount(0).genres(new HashSet<>()).build();
         Film film3 = Film.builder().name("Film3").description("Description3").releaseDate(date).mpa(rating)
-                .usersId(new ArrayList<>()).genres(new HashSet<>()).build();
+                .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю пользователей и фильмы в БД
         User addedUser1 = userStorage.addUser(user1);
@@ -125,9 +125,9 @@ public class FilmStorageTest {
         filmStorage.addLike(addedFilm2.getId(), addedUser3.getId());
 
         // Проверяю количество лайков у каждого фильма
-        int film1CountOfLikes = filmStorage.getFilmById(addedFilm1.getId()).getUsersId().size();
-        int film2CountOfLikes = filmStorage.getFilmById(addedFilm2.getId()).getUsersId().size();
-        int film3CountOfLikes = filmStorage.getFilmById(addedFilm3.getId()).getUsersId().size();
+        int film1CountOfLikes = filmStorage.getFilmById(addedFilm1.getId()).getLikesCount();
+        int film2CountOfLikes = filmStorage.getFilmById(addedFilm2.getId()).getLikesCount();
+        int film3CountOfLikes = filmStorage.getFilmById(addedFilm3.getId()).getLikesCount();
         assertEquals(2, film1CountOfLikes);
         assertEquals(3, film2CountOfLikes);
         assertEquals(1, film3CountOfLikes);
@@ -137,8 +137,8 @@ public class FilmStorageTest {
 
         // Проверяю полученный результат
         assertEquals(3, popularFilms.size());
-        assertEquals(3, popularFilms.get(0).getUsersId().size());
-        assertEquals(2, popularFilms.get(1).getUsersId().size());
-        assertEquals(1, popularFilms.get(2).getUsersId().size());
+        assertEquals(3, popularFilms.get(0).getLikesCount());
+        assertEquals(2, popularFilms.get(1).getLikesCount());
+        assertEquals(1, popularFilms.get(2).getLikesCount());
     }
 }

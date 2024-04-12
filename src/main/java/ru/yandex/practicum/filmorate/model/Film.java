@@ -45,13 +45,5 @@ public class Film {
     @Valid
     private Set<Genre> genres;
 
-    private List<Integer> usersId;
-
-    public void addUserIdToList(Integer id) {
-        usersId.add(id);
-    }
-
-    public void deleteUserIdFromList(Integer id) {
-        usersId.remove(id);
-    }
+    private Integer likesCount;
 }

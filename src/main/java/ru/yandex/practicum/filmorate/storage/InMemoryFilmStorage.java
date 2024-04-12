@@ -67,7 +67,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getPopularFilms(Integer count) {
         return getFilms().stream()
-                .sorted((f1, f2) -> Integer.compare(f2.getUsersId().size(), f1.getUsersId().size()))
+                .sorted((f1, f2) -> Integer.compare(f2.getLikesCount(), f1.getLikesCount()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
@@ -77,7 +77,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         User user = userStorage.getUserById(userId);
         Film film = getFilmById(filmId);
         user.addFilmIdToList(filmId);
-        film.addUserIdToList(userId);
+        Integer likesCount = film.getLikesCount();
+        film.setLikesCount(++likesCount);
     }
 
     @Override
@@ -85,7 +86,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         User user = userStorage.getUserById(userId);
         Film film = getFilmById(filmId);
         user.deleteFilmIdFromList(filmId);
-        film.deleteUserIdFromList(userId);
+        Integer likesCount = film.getLikesCount();
+        film.setLikesCount(--likesCount);
     }
 
     private Integer getAndIncreaseId() {
