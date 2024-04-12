@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<User> getCommonFriendsList(Integer userId, Integer otherId) {
+    public List<User> getCommonFriendsList(Integer userId, Integer otherId) {
         return userStorage.getCommonFriendsList(userId, otherId);
     }
 
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<User> getFriendsList(Integer userId) {
+    public List<User> getFriendsList(Integer userId) {
         return userStorage.getUserFriends(userId);
     }
 

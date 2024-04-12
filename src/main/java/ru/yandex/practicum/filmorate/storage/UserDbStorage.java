@@ -133,7 +133,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Set<User> getUserFriends(Integer userId) {
+    public List<User> getUserFriends(Integer userId) {
         String sqlSelectQuery = "SELECT COUNT(*) FROM users WHERE id_user = ?";
         String sqlQuery = "SELECT * FROM users u WHERE u.id_user " +
                           "IN (SELECT f.id_friend FROM friends f WHERE f.id_user = ?) OR u.id_user " +
@@ -144,12 +144,12 @@ public class UserDbStorage implements UserStorage {
         if (count == 0) {
             throw new NotFoundException(String.format("User with id=%d does not exist", userId));
         }
-        return new HashSet<>(jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), userId, userId));
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), userId, userId);
     }
 
     @Override
-    public Set<User> getCommonFriendsList(Integer userId, Integer otherId) {
-        Set<User> userFriendList = getUserFriends(userId);
+    public List<User> getCommonFriendsList(Integer userId, Integer otherId) {
+        List<User> userFriendList = getUserFriends(userId);
         userFriendList.retainAll(getUserFriends(otherId));
         return userFriendList;
     }

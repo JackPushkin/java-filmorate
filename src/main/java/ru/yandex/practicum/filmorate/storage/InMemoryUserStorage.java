@@ -69,23 +69,23 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Set<User> getUserFriends(Integer userId) {
+    public List<User> getUserFriends(Integer userId) {
         User user = getUserById(userId);
 
         return user.getFriendsId().stream()
                 .map(this::getUserById)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Set<User> getCommonFriendsList(Integer userId, Integer otherId) {
+    public List<User> getCommonFriendsList(Integer userId, Integer otherId) {
         User user = getUserById(userId);
         User otherUser = getUserById(otherId);
 
         return user.getFriendsId().stream()
                 .filter(id -> otherUser.getFriendsId().contains(id))
                 .map(this::getUserById)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     private void setUserName(User user) {

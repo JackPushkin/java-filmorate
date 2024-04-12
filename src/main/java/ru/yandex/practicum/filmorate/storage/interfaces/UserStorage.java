@@ -19,7 +19,7 @@ public interface UserStorage {
 
     void deleteFriend(Integer userId, Integer friendId);
 
-    Set<User> getUserFriends(Integer userId);
+    List<User> getUserFriends(Integer userId);
 
-    Set<User> getCommonFriendsList(Integer userId, Integer otherId);
+    List<User> getCommonFriendsList(Integer userId, Integer otherId);
 }

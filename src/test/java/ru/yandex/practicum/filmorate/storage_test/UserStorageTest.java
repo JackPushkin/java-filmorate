@@ -101,7 +101,7 @@ public class UserStorageTest {
         User addedUserFriend2 = userStorage.addUser(userFriend2);
 
         // Получаю список друзей пользователя из БД и проверяю, что он пуст
-        Set<User> usersFriends = userStorage.getUserFriends(addedUser.getId());
+        List<User> usersFriends = userStorage.getUserFriends(addedUser.getId());
         assertEquals(0, usersFriends.size());
 
         // Добавляю пользователю двух друзей
@@ -116,7 +116,7 @@ public class UserStorageTest {
         assertTrue(friendsId.contains(addedUserFriend2.getId()));
 
         // Получаю список друзей пользователя из БД и проверяю, что в нем два друга
-        Set<User> newUsersFriends = userStorage.getUserFriends(addedUser.getId());
+        List<User> newUsersFriends = userStorage.getUserFriends(addedUser.getId());
         assertEquals(2, newUsersFriends.size());
         assertTrue(newUsersFriends.contains(addedUserFriend1));
         assertTrue(newUsersFriends.contains(addedUserFriend2));
@@ -146,7 +146,7 @@ public class UserStorageTest {
         userStorage.addFriend(addedUser3.getId(), addedUser2.getId());
 
         // Получаю список общих друзей для user1 и user2 и проверяю, что список пуст
-        Set<User> commonFriends = userStorage.getCommonFriendsList(addedUser1.getId(), addedUser2.getId());
+        List<User> commonFriends = userStorage.getCommonFriendsList(addedUser1.getId(), addedUser2.getId());
         assertTrue(commonFriends.isEmpty());
 
         // Получаю список общих друзей для user1 и user3 и проверяю, что список содержит одного друга (user2)
