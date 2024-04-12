@@ -7,18 +7,16 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Repository
@@ -154,33 +152,14 @@ public class UserDbStorage implements UserStorage {
         return userFriendList;
     }
 
-    private Set<Integer> getUserFriendsIdList(Integer userId) {
-        String sqlQuery1 = "SELECT id_friend FROM friends WHERE id_user = ?";
-        String sqlQuery2 = "SELECT id_user FROM friends WHERE id_friend = ? AND friendship_status = ?";
-
-        Set<Integer> friendsIdList = new HashSet<>();
-
-        friendsIdList.addAll(jdbcTemplate.query(sqlQuery1, (rs, rowNum) -> rs.getInt("id_friend"), userId));
-        friendsIdList.addAll(jdbcTemplate.query(sqlQuery2, (rs, rowNum) -> rs.getInt("id_user"), userId, true));
-
-        return friendsIdList;
-    }
-
-    private List<Integer> getUserLikesList(Integer userId) {
-        String sqlQuery = "SELECT id_film FROM likes WHERE id_user = ?";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getInt("id_film"), userId);
-    }
-
     private User makeUser(ResultSet rs) throws SQLException {
-        Integer userId = rs.getInt("id_user");
+        int userId = rs.getInt("id_user");
         return User.builder()
                 .id(userId)
                 .email(rs.getString("email"))
                 .login(rs.getString("login"))
                 .name(rs.getString("name"))
                 .birthday(LocalDate.parse(rs.getString("birthday")))
-                .friendsId(getUserFriendsIdList(userId))
-                .likedFilmsId(getUserLikesList(userId))
                 .build();
     }
 }

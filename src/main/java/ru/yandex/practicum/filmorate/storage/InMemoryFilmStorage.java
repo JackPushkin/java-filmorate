@@ -76,7 +76,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void addLike(Integer filmId, Integer userId) {
         User user = userStorage.getUserById(userId);
         Film film = getFilmById(filmId);
-        user.addFilmIdToList(filmId);
+//        user.addFilmIdToList(filmId);
         Integer likesCount = film.getLikesCount();
         film.setLikesCount(++likesCount);
     }
@@ -85,7 +85,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteLike(Integer filmId, Integer userId) {
         User user = userStorage.getUserById(userId);
         Film film = getFilmById(filmId);
-        user.deleteFilmIdFromList(filmId);
+//        user.deleteFilmIdFromList(filmId);
         Integer likesCount = film.getLikesCount();
         film.setLikesCount(--likesCount);
     }

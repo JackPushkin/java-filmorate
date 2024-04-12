@@ -10,8 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -43,24 +41,4 @@ public class User {
     @NotNull(message = "must not be null",
             groups = {ValidationMarkerInterface.OnCreate.class})
     private LocalDate birthday;
-
-    private Set<Integer> friendsId;
-
-    private List<Integer> likedFilmsId;
-
-    public void addFilmIdToList(Integer filmId) {
-        likedFilmsId.add(filmId);
-    }
-
-    public void addFriendIdToList(Integer friendId) {
-        friendsId.add(friendId);
-    }
-
-    public void deleteFriendIdFromList(Integer friendId) {
-        friendsId.remove(friendId);
-    }
-
-    public void deleteFilmIdFromList(Integer filmId) {
-        likedFilmsId.remove(filmId);
-    }
 }
