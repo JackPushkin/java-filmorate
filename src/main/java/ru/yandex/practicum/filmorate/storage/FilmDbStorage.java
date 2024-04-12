@@ -6,7 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MpaRating;
@@ -72,7 +72,7 @@ public class FilmDbStorage implements FilmStorage {
         int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDescription(), selectedFilm.getReleaseDate(),
                 selectedFilm.getDuration(), selectedFilm.getMpa().getId(), film.getId());
         if (count == 0) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", film.getId()));
+            throw new NotFoundException(String.format("Film with id=%d not found", film.getId()));
         }
         return selectedFilm;
     }
@@ -89,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
         try {
             return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
         } catch (DataAccessException e) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
+            throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
     }
 

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exeption.RatingNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.storage.interfaces.MpaStorage;
 
@@ -28,7 +28,7 @@ public class MpaStorageImpl implements MpaStorage {
         try {
             return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeMpaRating(rs), id);
         } catch (DataAccessException e) {
-            throw new RatingNotFoundException(String.format("Rating with id=%d does not exist", id));
+            throw new NotFoundException(String.format("Rating with id=%d does not exist", id));
         }
     }
 

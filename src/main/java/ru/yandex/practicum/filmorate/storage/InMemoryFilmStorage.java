@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
@@ -43,7 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         Film existingFilm = films.get(film.getId());
         if (existingFilm == null) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
+            throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
         updateFilmFields(existingFilm, film);
         log.debug("Update film: {}", film);
@@ -59,7 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film getFilmById(Integer filmId) {
         Film film = films.get(filmId);
         if (film == null) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
+            throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
         return film;
     }

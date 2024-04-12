@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
-import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -73,12 +73,12 @@ public class UserDbStorage implements UserStorage {
             int count = jdbcTemplate.update(sqlQuery, selectedUser.getEmail(), selectedUser.getLogin(), selectedUser.getName(),
                     selectedUser.getBirthday(), selectedUser.getId());
             if (count == 0) {
-                throw new UserNotFoundException(String.format("User with id=%d not found", user.getId()));
+                throw new NotFoundException(String.format("User with id=%d not found", user.getId()));
             }
         } catch (DuplicateKeyException e) {
             throw new UserAlreadyRegisteredException("User with such email already registered.");
         } catch (DataAccessException e) {
-            throw new UserNotFoundException(String.format("User with id=%d not found", user.getId()));
+            throw new NotFoundException(String.format("User with id=%d not found", user.getId()));
         }
         return selectedUser;
     }
@@ -95,7 +95,7 @@ public class UserDbStorage implements UserStorage {
         try {
             return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeUser(rs), userId);
         } catch (DataAccessException e) {
-            throw new UserNotFoundException(String.format("User with id=%d not found", userId));
+            throw new NotFoundException(String.format("User with id=%d not found", userId));
         }
     }
 
@@ -110,7 +110,7 @@ public class UserDbStorage implements UserStorage {
             try {
                 jdbcTemplate.update(sqlInsertQuery, userId, friendId);
             } catch (DataAccessException e) {
-                throw new UserNotFoundException("User with such id does not exist");
+                throw new NotFoundException("User with such id does not exist");
             }
         }
     }
@@ -124,9 +124,9 @@ public class UserDbStorage implements UserStorage {
         int count2 = jdbcTemplate.queryForObject(sqlSelectQuery, Integer.class, friendId);
 
         if (count1 == 0) {
-            throw new UserNotFoundException(String.format("User with id=%d does not exist", userId));
+            throw new NotFoundException(String.format("User with id=%d does not exist", userId));
         } else if (count2 == 0) {
-            throw new UserNotFoundException(String.format("User with id=%d does not exist", friendId));
+            throw new NotFoundException(String.format("User with id=%d does not exist", friendId));
         }
 
         jdbcTemplate.update(sqlDeleteQuery, userId, friendId);
@@ -142,7 +142,7 @@ public class UserDbStorage implements UserStorage {
         int count = jdbcTemplate.queryForObject(sqlSelectQuery, Integer.class, userId);
 
         if (count == 0) {
-            throw new UserNotFoundException(String.format("User with id=%d does not exist", userId));
+            throw new NotFoundException(String.format("User with id=%d does not exist", userId));
         }
         return new HashSet<>(jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), userId, userId));
     }

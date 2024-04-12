@@ -16,18 +16,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(value = {
-            FilmNotFoundException.class,
-            UserNotFoundException.class,
-            RatingNotFoundException.class,
-            GenreNotFoundException.class })
+    @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundExceptionHandler(RuntimeException e) {
         return new ErrorResponse(Map.of("id", e.getMessage()));
     }
 
     @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse userAlreadyRegisteredExceptionHandler(UserAlreadyRegisteredException e) {
         return new ErrorResponse(Map.of("error", e.getMessage()));
     }

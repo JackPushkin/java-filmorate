@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exeption.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
@@ -28,7 +28,7 @@ public class GenreStorageImpl implements GenreStorage {
         try {
             return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeGenre(rs), id);
         } catch (DataAccessException e) {
-            throw new GenreNotFoundException(String.format("Genre with id=%d does not exist", id));
+            throw new NotFoundException(String.format("Genre with id=%d does not exist", id));
         }
     }
 
