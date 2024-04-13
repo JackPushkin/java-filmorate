@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class FilmStorageTest {
     public void addAndFindFilmByIdTest() {
 
         // Создаю фильм
-        Film film = Film.builder().name("Film").description("Description").releaseDate(date).mpa(rating)
+        Film film = Film.builder().name("Film").duration(120).description("Description").releaseDate(date).mpa(rating)
                 .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю фильм в БД
@@ -63,7 +62,7 @@ public class FilmStorageTest {
     public void getAllFilmsAndUpdateFilmTest() {
 
         // Создаю фильм
-        Film film = Film.builder().name("Film").description("Description").releaseDate(date).mpa(rating)
+        Film film = Film.builder().name("Film").duration(120).description("Description").releaseDate(date).mpa(rating)
                 .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю фильм в БД
@@ -104,11 +103,11 @@ public class FilmStorageTest {
         User user3 = User.builder().email("jack3@mail.ru").login("jack3").name("Jack3").birthday(date).build();
 
         // Создаю фильм
-        Film film1 = Film.builder().name("Film1").description("Description1").releaseDate(date).mpa(rating)
+        Film film1 = Film.builder().name("Film1").duration(120).description("Description1").releaseDate(date).mpa(rating)
                 .likesCount(0).genres(new HashSet<>()).build();
-        Film film2 = Film.builder().name("Film2").description("Description2").releaseDate(date).mpa(rating)
+        Film film2 = Film.builder().name("Film2").duration(120).description("Description2").releaseDate(date).mpa(rating)
                 .likesCount(0).genres(new HashSet<>()).build();
-        Film film3 = Film.builder().name("Film3").description("Description3").releaseDate(date).mpa(rating)
+        Film film3 = Film.builder().name("Film3").duration(120).description("Description3").releaseDate(date).mpa(rating)
                 .likesCount(0).genres(new HashSet<>()).build();
 
         // Добавляю пользователей и фильмы в БД

@@ -35,7 +35,9 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive(message = "must be greater than 0")
-    private int duration;
+    @NotNull(message = "must not be null",
+            groups = {ValidationMarkerInterface.OnCreate.class})
+    private Integer duration;
 
     @Valid
     @NotNull(message = "must not be null",

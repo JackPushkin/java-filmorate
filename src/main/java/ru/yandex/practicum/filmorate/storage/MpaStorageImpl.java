@@ -25,11 +25,11 @@ public class MpaStorageImpl implements MpaStorage {
     @Override
     public MpaRating getMpaRatingById(Integer id) {
         String sqlQuery = "SELECT * FROM mpa_rating WHERE id_rating = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeMpaRating(rs), id);
-        } catch (DataAccessException e) {
+        List<MpaRating> ratings = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeMpaRating(rs), id);
+        if (ratings.isEmpty()) {
             throw new NotFoundException(String.format("Rating with id=%d does not exist", id));
         }
+        return ratings.get(0);
     }
 
     @Override

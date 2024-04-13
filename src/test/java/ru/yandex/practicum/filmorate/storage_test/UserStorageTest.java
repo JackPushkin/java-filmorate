@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +35,6 @@ public class UserStorageTest {
     public void addAndFindUserByIdTest() {
 
         // Создаю пользователя
-//        User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
         User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date).build();
 
         // Добавляю пользователя в БД
@@ -59,8 +54,6 @@ public class UserStorageTest {
     public void getAllUsersAndUpdateUserTest() {
 
         // Создаю пользователя
-//        User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
         User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date).build();
 
         // Добавляю пользователя в БД
@@ -90,12 +83,6 @@ public class UserStorageTest {
     public void addGetDeleteUserFriendTest() {
 
         // Создаю пользователей
-//        User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User userFriend1 = User.builder().email("john@mail.ru").login("john").name("John").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User userFriend2 = User.builder().email("Helen@mail.ru").login("helen").name("Helen").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
         User user = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date).build();
         User userFriend1 = User.builder().email("john@mail.ru").login("john").name("John").birthday(date).build();
         User userFriend2 = User.builder().email("Helen@mail.ru").login("helen").name("Helen").birthday(date).build();
@@ -113,13 +100,6 @@ public class UserStorageTest {
         userStorage.addFriend(addedUser.getId(), addedUserFriend1.getId());
         userStorage.addFriend(addedUser.getId(), addedUserFriend2.getId());
 
-        // Получаю пользователя и проверяю, что в списке его друзей два человека с конкретными id
-//        addedUser = userStorage.getUserById(addedUser.getId());
-//        Set<Integer> friendsId = addedUser.getFriendsId();
-//        assertEquals(2, friendsId.size());
-//        assertTrue(friendsId.contains(addedUserFriend1.getId()));
-//        assertTrue(friendsId.contains(addedUserFriend2.getId()));
-
         // Получаю список друзей пользователя из БД и проверяю, что в нем два друга
         List<User> newUsersFriends = userStorage.getUserFriends(addedUser.getId());
         assertEquals(2, newUsersFriends.size());
@@ -130,12 +110,6 @@ public class UserStorageTest {
     @Test
     public void getCommonUserFriendsTest() {
         // Создаю пользователей
-//        User user1 = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User user2 = User.builder().email("john@mail.ru").login("john").name("John").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User user3 = User.builder().email("Helen@mail.ru").login("helen").name("Helen").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
         User user1 = User.builder().email("jack@mail.ru").login("jack").name("Jack").birthday(date).build();
         User user2 = User.builder().email("john@mail.ru").login("john").name("John").birthday(date).build();
         User user3 = User.builder().email("Helen@mail.ru").login("helen").name("Helen").birthday(date).build();

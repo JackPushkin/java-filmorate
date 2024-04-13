@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
@@ -25,11 +26,11 @@ public class GenreStorageImpl implements GenreStorage {
     @Override
     public Genre getGenreById(Integer id) {
         String sqlQuery = "SELECT * FROM genres WHERE id_genre = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeGenre(rs), id);
-        } catch (DataAccessException e) {
-            throw new NotFoundException(String.format("Genre with id=%d does not exist", id));
+        List<Genre> genres = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeGenre(rs), id);
+        if (genres.isEmpty()) {
+            throw new NotFoundException(String.format("Genre with id=%d not found", id));
         }
+        return genres.get(0);
     }
 
     @Override

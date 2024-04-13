@@ -50,35 +50,18 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sqlSelectQuery = "SELECT * FROM users WHERE id_user = ?";
         String sqlQuery = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id_user = ?";
 
-        User selectedUser;
-
         try {
-            String email = user.getEmail();
-            String login = user.getLogin();
-            String name = user.getName();
-            LocalDate birthday = user.getBirthday();
-
-            selectedUser = jdbcTemplate.queryForObject(sqlSelectQuery, (rs, rowNum) -> makeUser(rs), user.getId());
-
-            if (email != null) selectedUser.setEmail(email);
-            if (login != null) selectedUser.setLogin(login);
-            if (name != null) selectedUser.setName(name);
-            if (birthday != null) selectedUser.setBirthday(birthday);
-
-            int count = jdbcTemplate.update(sqlQuery, selectedUser.getEmail(), selectedUser.getLogin(), selectedUser.getName(),
-                    selectedUser.getBirthday(), selectedUser.getId());
+            int count = jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(),
+                    user.getBirthday(), user.getId());
             if (count == 0) {
                 throw new NotFoundException(String.format("User with id=%d not found", user.getId()));
             }
         } catch (DuplicateKeyException e) {
             throw new UserAlreadyRegisteredException("User with such email already registered.");
-        } catch (DataAccessException e) {
-            throw new NotFoundException(String.format("User with id=%d not found", user.getId()));
         }
-        return selectedUser;
+        return user;
     }
 
     @Override
@@ -90,11 +73,13 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUserById(Integer userId) {
         String sqlQuery = "SELECT * FROM users WHERE id_user = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeUser(rs), userId);
-        } catch (DataAccessException e) {
+
+        List<User> users = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), userId);
+
+        if (users.isEmpty()) {
             throw new NotFoundException(String.format("User with id=%d not found", userId));
         }
+        return users.get(0);
     }
 
     @Override
@@ -133,9 +118,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getUserFriends(Integer userId) {
         String sqlSelectQuery = "SELECT COUNT(*) FROM users WHERE id_user = ?";
-        String sqlQuery = "SELECT * FROM users u WHERE u.id_user " +
-                          "IN (SELECT f.id_friend FROM friends f WHERE f.id_user = ?) OR u.id_user " +
-                          "IN (SELECT f.id_user FROM friends f WHERE f.id_friend = ? AND friendship_status = TRUE)";
+        String sqlQuery = "SELECT * FROM users u JOIN friends f " +
+                          "WHERE u.id_user = f.id_friend AND f.id_user = ? " +
+                          "OR u.id_user = f.id_user AND f.id_friend = ? AND f.friendship_status = TRUE";
 
         int count = jdbcTemplate.queryForObject(sqlSelectQuery, Integer.class, userId);
 
@@ -147,9 +132,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getCommonFriendsList(Integer userId, Integer otherId) {
-        List<User> userFriendList = getUserFriends(userId);
-        userFriendList.retainAll(getUserFriends(otherId));
-        return userFriendList;
+        String sqlQuery = "SELECT u.ID_USER, u.EMAIL, u.LOGIN, u.NAME, u.BIRTHDAY FROM users u JOIN friends f " +
+                          "WHERE (u.id_user = f.id_friend AND f.id_user = ? " +
+                          "OR u.id_user = f.id_user AND f.id_friend = ? AND f.friendship_status = TRUE) " +
+                          "OR (u.id_user = f.id_friend AND f.id_user = ? " +
+                          "OR u.id_user = f.id_user AND f.id_friend = ? AND f.friendship_status = TRUE) " +
+                          "GROUP BY u.id_user HAVING COUNT(u.id_user) > 1";
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), userId, userId, otherId, otherId);
     }
 
     private User makeUser(ResultSet rs) throws SQLException {

@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,31 +48,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        String sqlSelectQuery = "SELECT * FROM films WHERE id_film = ?";
         String sqlQuery = "UPDATE films SET title = ?, description = ?, release_date = ?, duration = ?, id_rating = ? " +
                 "WHERE id_film = ?";
 
-        String title = film.getName();
-        String description = film.getDescription();
-        LocalDate releaseDate = film.getReleaseDate();
-        int duration = film.getDuration();
-        MpaRating rating = film.getMpa();
-
-        Film selectedFilm;
-        selectedFilm = jdbcTemplate.queryForObject(sqlSelectQuery, (rs, rowNum) -> makeFilm(rs), film.getId());
-
-        if (title != null) selectedFilm.setName(title);
-        if (description != null) selectedFilm.setDescription(description);
-        if (releaseDate != null) selectedFilm.setReleaseDate(releaseDate);
-        if (duration > 0) selectedFilm.setDuration(duration);
-        if (rating != null) selectedFilm.setMpa(rating);
-
-        int count = jdbcTemplate.update(sqlQuery, selectedFilm.getName(), selectedFilm.getDescription(), selectedFilm.getReleaseDate(),
-                selectedFilm.getDuration(), selectedFilm.getMpa().getId(), film.getId());
+        int count = jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(),
+                film.getDuration(), film.getMpa().getId(), film.getId());
         if (count == 0) {
             throw new NotFoundException(String.format("Film with id=%d not found", film.getId()));
         }
-        return selectedFilm;
+        deleteGenres(film);
+        addGenres(film);
+        return film;
     }
 
     @Override
@@ -86,11 +70,11 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilmById(Integer filmId) {
         String sqlQuery = "SELECT * FROM films WHERE id_film = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
-        } catch (DataAccessException e) {
+        List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
+        if (films.isEmpty()) {
             throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
+        return films.get(0);
     }
 
     @Override
@@ -122,14 +106,20 @@ public class FilmDbStorage implements FilmStorage {
 
     private void addGenres(Film film) {
         String sqlQuery = "INSERT INTO films_genres (id_film, id_genre) VALUES (?, ?)";
-        Integer filmId = film.getId();
+        int filmId = film.getId();
         Set<Genre> genres = film.getGenres();
 
         if (genres == null) return;
 
-        for (Genre genre : genres) {
-            jdbcTemplate.update(sqlQuery, filmId, genre.getId());
-        }
+        jdbcTemplate.batchUpdate(sqlQuery, genres, genres.size(), (ps, genre) -> {
+            ps.setInt(1, filmId);
+            ps.setInt(2, genre.getId());
+        });
+    }
+
+    private void deleteGenres(Film film) {
+        String sqlQuery = "DELETE FROM films_genres WHERE id_film = ?";
+        jdbcTemplate.update(sqlQuery, film.getId());
     }
 
     private Set<Genre> getFilmGenresSet(Integer filmId) {

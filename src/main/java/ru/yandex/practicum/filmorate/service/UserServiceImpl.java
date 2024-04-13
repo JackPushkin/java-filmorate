@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.interfaces.UserService;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -54,7 +55,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        return userStorage.updateUser(user);
+        String email = user.getEmail();
+        String login = user.getLogin();
+        String name = user.getName();
+        LocalDate birthday = user.getBirthday();
+
+        User selectedUser = userStorage.getUserById(user.getId());
+
+        if (email != null) selectedUser.setEmail(email);
+        if (login != null) selectedUser.setLogin(login);
+        if (name != null) selectedUser.setName(name);
+        if (birthday != null) selectedUser.setBirthday(birthday);
+
+        return userStorage.updateUser(selectedUser);
     }
 
     @Override

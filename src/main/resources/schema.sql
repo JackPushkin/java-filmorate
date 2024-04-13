@@ -16,11 +16,10 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-	id serial PRIMARY KEY,
 	id_user integer REFERENCES users (id_user),
 	id_friend integer REFERENCES users (id_user),
 	friendship_status boolean NOT NULL,
-	UNIQUE (id_user, id_friend)
+	PRIMARY KEY(id_user, id_friend)
 );
 
 CREATE TABLE IF NOT EXISTS mpa_rating (
@@ -38,10 +37,9 @@ CREATE TABLE IF NOT EXISTS films (
 );
 
 CREATE TABLE IF NOT EXISTS likes (
-	id serial PRIMARY KEY,
 	id_user integer REFERENCES users (id_user),
 	id_film integer REFERENCES films (id_film),
-	UNIQUE (id_user, id_film)
+	PRIMARY KEY(id_user, id_film)
 );
 
 CREATE TABLE IF NOT EXISTS genres (
@@ -50,8 +48,7 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS films_genres (
-	id serial PRIMARY KEY,
 	id_film integer REFERENCES films (id_film),
 	id_genre integer REFERENCES genres (id_genre),
-	UNIQUE (id_film, id_genre)
+	PRIMARY KEY(id_film, id_genre)
 );
