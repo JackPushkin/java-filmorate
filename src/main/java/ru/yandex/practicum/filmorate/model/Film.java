@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.validator.annotation.MinDate;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Data
