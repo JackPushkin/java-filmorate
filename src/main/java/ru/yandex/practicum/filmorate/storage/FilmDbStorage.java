@@ -63,13 +63,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms() {
-        String sqlQuery = "SELECT * FROM films";
+        String sqlQuery = "SELECT * FROM films f JOIN mpa_rating mr ON f.id_rating = mr.id_rating";
         return jdbcTemplate.query(sqlQuery, (rs, numRow) -> makeFilm(rs));
     }
 
     @Override
     public Film getFilmById(Integer filmId) {
-        String sqlQuery = "SELECT * FROM films WHERE id_film = ?";
+        String sqlQuery = "SELECT * FROM films f JOIN mpa_rating mr ON f.id_rating = mr.id_rating WHERE id_film = ?";
         List<Film> films = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
         if (films.isEmpty()) {
             throw new NotFoundException(String.format("Film with id=%d not found", filmId));
@@ -79,8 +79,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        String sqlQuery = "SELECT f.id_film, f.title, f.description, f.release_date, f.duration, f.id_rating " +
-                          "FROM films f JOIN likes l ON f.id_film = l.id_film " +
+        String sqlQuery = "SELECT f.id_film, f.title, f.description, f.release_date, f.duration, f.id_rating, mr.rating_name " +
+                          "FROM films f " +
+                          "JOIN mpa_rating mr ON f.id_rating = mr.id_rating " +
+                          "JOIN likes l ON f.id_film = l.id_film " +
                           "GROUP BY f.id_film " +
                           "ORDER BY COUNT(l.id_user) DESC " +
                           "LIMIT ?";
@@ -148,7 +150,7 @@ public class FilmDbStorage implements FilmStorage {
                 .releaseDate(rs.getDate("release_date").toLocalDate())
                 .mpa(MpaRating.builder()
                         .id(rs.getInt("id_rating"))
-                        .name(getRatingName(rs.getInt("id_rating")))
+                        .name(rs.getString("rating_name"))
                         .build())
                 .genres(getFilmGenresSet(filmId))
                 .likesCount(getFilmLikesCount(filmId))
