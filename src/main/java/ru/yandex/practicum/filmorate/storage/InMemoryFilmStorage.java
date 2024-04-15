@@ -1,13 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,12 +19,6 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private Integer filmId = 1;
-    private final UserStorage userStorage;
-
-    @Autowired
-    public InMemoryFilmStorage(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
 
     @Override
     public Film addFilm(Film film) {
@@ -72,10 +63,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(Integer filmId, Integer userId) {}
+    public void addLike(Integer filmId, Integer userId) {
+    }
 
     @Override
-    public void deleteLike(Integer filmId, Integer userId) {}
+    public void deleteLike(Integer filmId, Integer userId) {
+    }
 
     private Integer getAndIncreaseId() {
         return filmId++;

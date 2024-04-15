@@ -56,10 +56,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void addFriend(Integer userId, Integer friendId) {}
+    public void addFriend(Integer userId, Integer friendId) {
+    }
 
     @Override
-    public void deleteFriend(Integer userId, Integer friendId) {}
+    public void deleteFriend(Integer userId, Integer friendId) {
+    }
 
     @Override
     public List<User> getUserFriends(Integer userId) {
