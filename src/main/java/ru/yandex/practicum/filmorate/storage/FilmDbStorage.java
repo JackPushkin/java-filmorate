@@ -46,7 +46,8 @@ public class FilmDbStorage implements FilmStorage {
                 "description", film.getDescription(),
                 "release_date", film.getReleaseDate(),
                 "duration", film.getDuration(),
-                "id_rating", film.getMpa().getId());
+                "id_rating", film.getMpa().getId(),
+                "likes_count", 0);
         film.setId((Integer) simpleJdbcInsert.executeAndReturnKey(parameters));
         addGenres(film);
         return film;
@@ -88,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getPopularFilms(Integer count) {
         Map<Integer, Set<Genre>> genres = getFilmsGenresMap(null);
-        String sqlQuery = "SELECT f.id_film, f.title, f.description, f.release_date, f.duration, f.id_rating, mr.rating_name " +
+        String sqlQuery = "SELECT f.id_film, f.title, f.description, f.release_date, f.duration, f.id_rating, f.likes_count, mr.rating_name " +
                           "FROM films f " +
                           "JOIN mpa_rating mr ON f.id_rating = mr.id_rating " +
                           "JOIN likes l ON f.id_film = l.id_film " +
@@ -101,18 +102,17 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void addLike(Integer filmId, Integer userId) {
         String sqlQuery = "INSERT INTO likes (id_user, id_film) VALUES (?, ?)";
+        String sqlUpdateQuery = "UPDATE films SET likes_count = likes_count + 1 WHERE id_film = ?";
         jdbcTemplate.update(sqlQuery, userId, filmId);
+        jdbcTemplate.update(sqlUpdateQuery, filmId);
     }
 
     @Override
     public void deleteLike(Integer filmId, Integer userId) {
         String sqlQuery = "DELETE FROM likes WHERE id_user = ? AND id_film = ?";
+        String sqlUpdateQuery = "UPDATE films SET likes_count = likes_count - 1 WHERE id_film = ?";
         jdbcTemplate.update(sqlQuery, userId, filmId);
-    }
-
-    private String getRatingName(Integer id) {
-        String sqlQuery = "SELECT rating_name FROM mpa_rating WHERE id_rating = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, String.class, id);
+        jdbcTemplate.update(sqlUpdateQuery, filmId);
     }
 
     private void addGenres(Film film) {
@@ -161,11 +161,6 @@ public class FilmDbStorage implements FilmStorage {
         return genres;
     }
 
-    private Integer getFilmLikesCount(Integer filmId) {
-        String sqlQuery = "SELECT COUNT(id_user) FROM likes WHERE id_film = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, Integer.class, filmId);
-    }
-
     private Film makeFilm(ResultSet rs, Map<Integer, Set<Genre>> map) throws SQLException {
         int filmId = rs.getInt("id_film");
         return Film.builder()
@@ -179,7 +174,7 @@ public class FilmDbStorage implements FilmStorage {
                         .name(rs.getString("rating_name"))
                         .build())
                 .genres(map.getOrDefault(filmId, new HashSet<>()))
-                .likesCount(getFilmLikesCount(filmId))
+                .likesCount(rs.getInt("likes_count"))
                 .build();
     }
 }

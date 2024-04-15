@@ -92,12 +92,6 @@ public class FilmStorageTest {
     public void addDeleteLikesAndGetPopularFilmsTest() {
 
         // Создаю пользователей
-//        User user1 = User.builder().email("jack1@mail.ru").login("jack1").name("Jack1").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User user2 = User.builder().email("jack2@mail.ru").login("jack2").name("Jack2").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
-//        User user3 = User.builder().email("jack3@mail.ru").login("jack3").name("Jack3").birthday(date)
-//                .likedFilmsId(new ArrayList<>()).friendsId(new HashSet<>()).build();
         User user1 = User.builder().email("jack1@mail.ru").login("jack1").name("Jack1").birthday(date).build();
         User user2 = User.builder().email("jack2@mail.ru").login("jack2").name("Jack2").birthday(date).build();
         User user3 = User.builder().email("jack3@mail.ru").login("jack3").name("Jack3").birthday(date).build();

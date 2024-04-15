@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS films (
 	description varchar NOT NULL,
 	release_date date NOT NULL,
 	duration integer NOT NULL,
-	id_rating integer REFERENCES mpa_rating (id_rating)
+	id_rating integer REFERENCES mpa_rating (id_rating),
+	likes_count integer NOT NULL DEFAULT 0 CHECK (likes_count >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS likes (
