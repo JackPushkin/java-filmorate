@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -73,22 +72,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(Integer filmId, Integer userId) {
-        User user = userStorage.getUserById(userId);
-        Film film = getFilmById(filmId);
-//        user.addFilmIdToList(filmId);
-        Integer likesCount = film.getLikesCount();
-        film.setLikesCount(++likesCount);
-    }
+    public void addLike(Integer filmId, Integer userId) {}
 
     @Override
-    public void deleteLike(Integer filmId, Integer userId) {
-        User user = userStorage.getUserById(userId);
-        Film film = getFilmById(filmId);
-//        user.deleteFilmIdFromList(filmId);
-        Integer likesCount = film.getLikesCount();
-        film.setLikesCount(--likesCount);
-    }
+    public void deleteLike(Integer filmId, Integer userId) {}
 
     private Integer getAndIncreaseId() {
         return filmId++;
