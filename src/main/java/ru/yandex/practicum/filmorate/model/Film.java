@@ -5,7 +5,6 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 import ru.yandex.practicum.filmorate.validator.annotation.MinDate;
 
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -38,12 +37,10 @@ public class Film {
             groups = {ValidationMarkerInterface.OnCreate.class})
     private Integer duration;
 
-    @Valid
     @NotNull(message = "must not be null",
             groups = {ValidationMarkerInterface.OnCreate.class})
     private MpaRating mpa;
 
-    @Valid
     private Set<Genre> genres;
 
     private Integer likesCount;

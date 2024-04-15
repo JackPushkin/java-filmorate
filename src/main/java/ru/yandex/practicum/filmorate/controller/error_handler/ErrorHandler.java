@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.controller.error_handler;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exeption.*;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.exeption.UserAlreadyRegisteredException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 import javax.validation.ConstraintViolationException;
@@ -18,8 +20,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundExceptionHandler(RuntimeException e) {
+    public ErrorResponse notFoundExceptionHandler(NotFoundException e) {
         return new ErrorResponse(Map.of("id", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse dataAccessExceptionHandler(DataAccessException e) {
+        return new ErrorResponse(Map.of("error", e.getMessage()));
     }
 
     @ExceptionHandler
