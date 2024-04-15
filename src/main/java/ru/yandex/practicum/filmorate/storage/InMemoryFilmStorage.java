@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -21,7 +22,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-//        filmAddedCheck(film);
         Integer id = getAndIncreaseId();
         film.setId(id);
         films.put(id, film);
@@ -33,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         Film existingFilm = films.get(film.getId());
         if (existingFilm == null) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
+            throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
         updateFilmFields(existingFilm, film);
         log.debug("Update film: {}", film);
@@ -49,9 +49,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film getFilmById(Integer filmId) {
         Film film = films.get(filmId);
         if (film == null) {
-            throw new FilmNotFoundException(String.format("Film with id=%d not found", filmId));
+            throw new NotFoundException(String.format("Film with id=%d not found", filmId));
         }
         return film;
+    }
+
+    @Override
+    public List<Film> getPopularFilms(Integer count) {
+        return getFilms().stream()
+                .sorted((f1, f2) -> Integer.compare(f2.getLikesCount(), f1.getLikesCount()))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addLike(Integer filmId, Integer userId) {
+    }
+
+    @Override
+    public void deleteLike(Integer filmId, Integer userId) {
     }
 
     private Integer getAndIncreaseId() {
