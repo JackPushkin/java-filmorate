@@ -19,9 +19,9 @@ public class UserValidationTests {
     @Test
     public void userEmailValidationTest() {
         // Создаю юзеров с некорректными адресами эл. почты
-        User user1 = new User("", "Jack", "Jacky", date);
-        User user2 = new User("hello", "Jack", "Jacky", date);
-        User user3 = new User(null, "Jack", "Jacky", date);
+        User user1 = User.builder().email("").login("Jack").name("Jacky").birthday(date).build();
+        User user2 = User.builder().email("hello").login("Jack").name("Jacky").birthday(date).build();
+        User user3 = User.builder().email(null).login("Jack").name("Jacky").birthday(date).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.OnCreate.class);
@@ -37,9 +37,9 @@ public class UserValidationTests {
     @Test
     public void userLoginValidationTest() {
         // Создаю юзеров с некорректными адресами эл. почты
-        User user1 = new User("hello@mail.ru", "", "Jacky", date);
-        User user2 = new User("world@mail.ru", "   ", "Jacky", date);
-        User user3 = new User("world@mail.ru", null, "Jacky", date);
+        User user1 = User.builder().email("hello@mail.ru").login("").name("Jacky").birthday(date).build();
+        User user2 = User.builder().email("hello@mail.ru").login("   ").name("Jacky").birthday(date).build();
+        User user3 = User.builder().email("hello@mail.ru").login(null).name("Jacky").birthday(date).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<User>> violations1 = validator.validate(user1, ValidationMarkerInterface.OnCreate.class);
@@ -55,7 +55,7 @@ public class UserValidationTests {
     @Test
     public void userBirthdayDateValidationTest() {
         // Создаю юзера из будущего
-        User user = new User("hello@mail.ru", "Jack", "Jacky", LocalDate.parse("2100-12-01"));
+        User user = User.builder().email("hello@mail.ru").login("Jack").name("Jacky").birthday(LocalDate.parse("2100-12-01")).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<User>> violations = validator.validate(user);

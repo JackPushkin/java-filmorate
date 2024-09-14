@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.validator.ValidationMarkerInterface;
 
 import javax.validation.ConstraintViolation;
@@ -16,13 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FilmValidationTests {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private final LocalDate date = LocalDate.parse("2000-12-01");
+    private final MpaRating mpaRating = MpaRating.builder().id(1).build();
 
     @Test
     public void filmNameValidationTest() {
         // Создаю фильмы с некорректным названием
-        Film film1 = new Film("", "Y", date, 100);
-        Film film2 = new Film("   ", "Y", date, 100);
-        Film film3 = new Film(null, "Y", date, 100);
+        Film film1 = Film.builder().name("").description("Y").releaseDate(date).duration(100).mpa(mpaRating).build();
+        Film film2 = Film.builder().name("   ").description("Y").releaseDate(date).duration(100).mpa(mpaRating).build();
+        Film film3 = Film.builder().name(null).description("Y").releaseDate(date).duration(100).mpa(mpaRating).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1, ValidationMarkerInterface.OnCreate.class);
@@ -42,10 +44,10 @@ public class FilmValidationTests {
         String tooLongDescription = new String(array);
 
         // Создаю фильмы с некорректным описанием
-        Film film1 = new Film("X", tooLongDescription, date, 100);
-        Film film2 = new Film("X", "", date, 100);
-        Film film3 = new Film("X", "   ", date, 100);
-        Film film4 = new Film("X", null, date, 100);
+        Film film1 = Film.builder().name("X").description(tooLongDescription).releaseDate(date).duration(100).mpa(mpaRating).build();
+        Film film2 = Film.builder().name("X").description("").releaseDate(date).duration(100).mpa(mpaRating).build();
+        Film film3 = Film.builder().name("X").description("   ").releaseDate(date).duration(100).mpa(mpaRating).build();
+        Film film4 = Film.builder().name("X").description(null).releaseDate(date).duration(100).mpa(mpaRating).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
@@ -66,8 +68,8 @@ public class FilmValidationTests {
         int zeroDuration = 0;
 
         // Создаю фильмы с некорректной продолжительностью
-        Film film1 = new Film("X", "Y", date, negativeDuration);
-        Film film2 = new Film("X", "Y", date, zeroDuration);
+        Film film1 = Film.builder().name("X").description("Y").releaseDate(date).duration(negativeDuration).build();
+        Film film2 = Film.builder().name("X").description("Y").releaseDate(date).duration(zeroDuration).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
@@ -81,9 +83,9 @@ public class FilmValidationTests {
     @Test
     public void filmReleaseDateValidationTest() {
         // Создаю фильмы с некорректной датой
-        Film film1 = new Film("X", "Y", LocalDate.parse("1890-12-01"), 100);
-        Film film2 = new Film("X", "Y", LocalDate.parse("2890-12-01"), 100);
-        Film film3 = new Film("X", "Y", null, 100);
+        Film film1 = Film.builder().name("X").description("Y").releaseDate(LocalDate.parse("1890-12-01")).duration(100).build();
+        Film film2 = Film.builder().name("X").description("Y").releaseDate(LocalDate.parse("2890-12-01")).duration(100).build();
+        Film film3 = Film.builder().name("X").description("Y").releaseDate(null).duration(100).build();
 
         // Получаю список ошибок валидации
         Set<ConstraintViolation<Film>> violations1 = validator.validate(film1);
